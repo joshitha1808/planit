@@ -16,7 +16,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
     return Scaffold(
       appBar: AppBar(automaticallyImplyLeading: false, toolbarHeight: 2),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(12.0),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,7 +32,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                icon: Icon(Icons.close_rounded, size: 24),
+                icon: Icon(Icons.close_rounded, size: 26),
               ),
               Text(
                 "New Task",
