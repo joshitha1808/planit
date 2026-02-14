@@ -148,7 +148,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
             TextFormField(
               decoration: InputDecoration(
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(30),
                 ),
               ),
             ),
@@ -164,7 +164,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
             TextFormField(
               decoration: InputDecoration(
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(16)),
+                  borderRadius: BorderRadius.circular(30),
                 ),
               ),
             ),
