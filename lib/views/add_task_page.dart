@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:planit/views/home_page.dart';
 import 'package:planit/views/widgets/category_selector.dart';
 
 class AddTaskPage extends StatefulWidget {
@@ -109,9 +110,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                         color: Theme.of(context).colorScheme.outlineVariant,
                       ),
                     ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
+                    onPressed: () {},
                     icon: Icon(Icons.add_alarm_outlined, size: 30),
                   ),
                   SizedBox(width: 10),
@@ -124,9 +123,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                         color: Theme.of(context).colorScheme.outlineVariant,
                       ),
                     ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
+                    onPressed: () {},
                     icon: Icon(Icons.notification_add_outlined, size: 30),
                   ),
                 ],
@@ -181,7 +178,13 @@ class _AddTaskPageState extends State<AddTaskPage> {
                       backgroundColor: Theme.of(context).colorScheme.primary,
                       foregroundColor: Theme.of(context).colorScheme.onPrimary,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => HomePage()),
+                      );
+                    },
+
                     child: Text(
                       "Create",
                       style: TextStyle(
