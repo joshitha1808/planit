@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.blue,
-          brightness: Brightness.dark,
+          brightness: Brightness.light,
         ),
       ),
       debugShowCheckedModeBanner: false,
@@ -35,5 +35,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-  
