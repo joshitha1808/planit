@@ -153,14 +153,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
               ),
             ),
             SizedBox(height: 20),
-            Text(
-              "DESCRIPTION",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Theme.of(context).colorScheme.onPrimaryFixed,
-              ),
-            ),
+
             TextFormField(
               decoration: InputDecoration(
                 labelText: "Description(optional)",
