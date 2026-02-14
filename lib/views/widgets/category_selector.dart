@@ -62,20 +62,20 @@ class _CategorySelectorState extends State<CategorySelector> {
               return ChoiceChip(
                 label: Text(
                   category,
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.w500),
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
                 selected: selectedCategory == category,
-                selectedColor: Colors.black,
-                backgroundColor: Colors.grey[200],
-                labelStyle: TextStyle(
-                  color: selectedCategory == category
-                      ? Colors.white
-                      : Colors.black,
-                ),
 
+                // selectedColor: Colors.black,
+                // backgroundColor: Theme.of(context).colorScheme.primary,
+                // labelStyle: TextStyle(
+                //   color: selectedCategory == category
+                //       ? Colors.black
+                //       : Colors.black,
+                // ),
                 showCheckmark: false,
                 onSelected: (_) {
                   setState(() {
