@@ -90,7 +90,7 @@ class _CategorySelectorState extends State<CategorySelector> {
               label: const Icon(Icons.add, size: 28),
               onPressed: _addCustomCategory,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(30),
               ),
             ),
           ],
