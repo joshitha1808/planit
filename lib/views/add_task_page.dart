@@ -163,6 +163,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
             ),
             TextFormField(
               decoration: InputDecoration(
+                labelText: "Description(optional)",
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
