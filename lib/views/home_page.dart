@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:planit/models/task_model.dart';
 import 'package:planit/viewmodels/task_viewmodel.dart';
+import 'package:planit/views/add_task_page.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -24,125 +25,6 @@ class _HomePageState extends ConsumerState<HomePage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     Future(() => ref.read(taskViewModelProvider.notifier).getAllTodos());
-  }
-
-  void _showAddTaskDialog(BuildContext context) {
-    final titleController = TextEditingController();
-    final descriptionController = TextEditingController();
-    String selectedCategory = 'Work';
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Add New Task'),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: titleController,
-                decoration: const InputDecoration(
-                  hintText: 'Task title',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: descriptionController,
-                decoration: const InputDecoration(
-                  hintText: 'Description (optional)',
-                  border: OutlineInputBorder(),
-                ),
-                maxLines: 2,
-              ),
-              const SizedBox(height: 12),
-              DropdownButtonFormField<String>(
-                value: selectedCategory,
-                decoration: const InputDecoration(border: OutlineInputBorder()),
-                items: ['Work', 'Personal', 'Shopping', 'Health']
-                    .map(
-                      (cat) => DropdownMenuItem(value: cat, child: Text(cat)),
-                    )
-                    .toList(),
-                onChanged: (value) {
-                  selectedCategory = value ?? 'Work';
-                },
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () {
-              if (titleController.text.isNotEmpty) {
-                final newTask = Task(
-                  id: DateTime.now().millisecondsSinceEpoch.toString(),
-                  title: titleController.text,
-                  description: descriptionController.text.isEmpty
-                      ? null
-                      : descriptionController.text,
-                  category: selectedCategory,
-                  createdAt: DateTime.now(),
-                  updatedAt: DateTime.now(),
-                  dueAt: DateTime.now().add(const Duration(days: 1)),
-                  isCompleted: false,
-                );
-                ref.read(taskViewModelProvider.notifier).createTodo(newTask);
-              }
-            },
-            child: const Text('Add'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showEditTaskDialog(BuildContext context, Task task) {
-    final titleController = TextEditingController(text: task.title);
-
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Edit Task'),
-        content: TextField(
-          controller: titleController,
-          decoration: const InputDecoration(
-            hintText: 'Task title',
-            border: OutlineInputBorder(),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () {
-              if (titleController.text.isNotEmpty) {
-                final updatedTask = Task(
-                  id: task.id,
-                  title: titleController.text,
-                  description: task.description,
-                  category: task.category,
-                  createdAt: task.createdAt,
-                  updatedAt: DateTime.now(),
-                  dueAt: task.dueAt,
-                  isCompleted: task.isCompleted,
-                );
-                ref
-                    .read(taskViewModelProvider.notifier)
-                    .updateTodo(updatedTask);
-              }
-            },
-            child: const Text('Save'),
-          ),
-        ],
-      ),
-    );
   }
 
   @override
@@ -277,7 +159,12 @@ class _HomePageState extends ConsumerState<HomePage> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddTaskDialog(context),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AddTaskPage()),
+          );
+        },
         tooltip: 'Add task',
         child: const Icon(Icons.add),
       ),
@@ -285,108 +172,98 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 
   Widget _buildTaskCard(BuildContext context, Task task) {
-    return GestureDetector(
-      onLongPress: () => _showEditTaskDialog(context, task),
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 12),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.grey[850],
-            borderRadius: BorderRadius.circular(24),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Row(
-            children: [
-              // Circular Checkbox
-              GestureDetector(
-                onTap: () {
-                  final updatedTask = Task(
-                    id: task.id,
-                    title: task.title,
-                    description: task.description,
-                    category: task.category,
-                    createdAt: task.createdAt,
-                    updatedAt: DateTime.now(),
-                    dueAt: task.dueAt,
-                    isCompleted: !task.isCompleted,
-                  );
-                  ref
-                      .read(taskViewModelProvider.notifier)
-                      .updateTodo(updatedTask);
-                },
-                child: Container(
-                  width: 24,
-                  height: 24,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.blue, width: 2),
-                    color: task.isCompleted ? Colors.blue : Colors.transparent,
-                  ),
-                  child: task.isCompleted
-                      ? const Icon(Icons.check, size: 16, color: Colors.white)
-                      : null,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.grey[850],
+          borderRadius: BorderRadius.circular(24),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Row(
+          children: [
+            // Circular Checkbox
+            GestureDetector(
+              onTap: () {
+                final updatedTask = Task(
+                  id: task.id,
+                  title: task.title,
+                  description: task.description,
+                  category: task.category,
+                  createdAt: task.createdAt,
+                  updatedAt: DateTime.now(),
+                  dueAt: task.dueAt,
+                  isCompleted: !task.isCompleted,
+                );
+                ref
+                    .read(taskViewModelProvider.notifier)
+                    .updateTodo(updatedTask);
+              },
+              child: Container(
+                width: 24,
+                height: 24,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Colors.blue, width: 2),
+                  color: task.isCompleted ? Colors.blue : Colors.transparent,
                 ),
+                child: task.isCompleted
+                    ? const Icon(Icons.check, size: 16, color: Colors.white)
+                    : null,
               ),
-              const SizedBox(width: 16),
-              // Task Content
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      task.title,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white,
-                        decoration: task.isCompleted
-                            ? TextDecoration.lineThrough
-                            : null,
+            ),
+            const SizedBox(width: 16),
+            // Task Content
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    task.title,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white,
+                      decoration: task.isCompleted
+                          ? TextDecoration.lineThrough
+                          : null,
+                    ),
+                  ),
+                  if (task.description != null && task.description!.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: Text(
+                        task.description!,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(fontSize: 13, color: Colors.grey[400]),
                       ),
                     ),
-                    if (task.description != null &&
-                        task.description!.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 4),
-                        child: Text(
-                          task.description!,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: Colors.grey[400],
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 12),
-              // Edit Icon + Delete
-              PopupMenuButton<String>(
-                onSelected: (value) {
-                  if (value == 'edit') {
-                    _showEditTaskDialog(context, task);
-                  } else if (value == 'delete') {
-                    ref
-                        .read(taskViewModelProvider.notifier)
-                        .deleteTodo(task.id);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('${task.title} deleted'),
-                        duration: const Duration(seconds: 2),
-                      ),
-                    );
-                  }
-                },
-                itemBuilder: (context) => [
-                  const PopupMenuItem(value: 'edit', child: Text('Edit')),
-                  const PopupMenuItem(value: 'delete', child: Text('Delete')),
                 ],
-                child: Icon(Icons.more_vert, color: Colors.grey[400]),
               ),
-            ],
-          ),
+            ),
+            const SizedBox(width: 12),
+            // Edit Icon + Delete
+            PopupMenuButton<String>(
+              onSelected: (value) {
+                if (value == 'edit') {
+                } else if (value == 'delete') {
+                  ref.read(taskViewModelProvider.notifier).deleteTodo(task.id);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('${task.title} deleted'),
+                      duration: const Duration(seconds: 2),
+                    ),
+                  );
+                }
+              },
+              itemBuilder: (context) => [
+                const PopupMenuItem(value: 'edit', child: Text('Edit')),
+                const PopupMenuItem(value: 'delete', child: Text('Delete')),
+              ],
+              child: Icon(Icons.more_vert, color: Colors.grey[400]),
+            ),
+          ],
         ),
       ),
     );
