@@ -71,6 +71,18 @@ class _SigninPageState extends ConsumerState<SigninPage> {
                   },
                 ),
                 SizedBox(height: 20),
+
+                //Password field
+                TextField(
+                  controller: _passwordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: "Password",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(30)),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
