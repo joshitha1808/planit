@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:planit/viewmodels/auth_viewmodel.dart';
 import 'package:planit/views/home_page.dart';
+import 'package:planit/views/widgets/auth_gradient_page.dart';
 
 class SigninPage extends ConsumerStatefulWidget {
   const SigninPage({super.key});
@@ -90,6 +91,23 @@ class _SigninPageState extends ConsumerState<SigninPage> {
                   },
                 ),
                 const SizedBox(height: 20),
+                AuthGradientPage(
+                  buttonText: 'Sign in',
+                  onTap: () async {
+                    if (_formKey.currentState!.validate()) {
+                      await ref
+                          .read(authViewModelProvider.notifier)
+                          .signinUser(
+                            email: _emailController.text,
+                            password: _passwordController.text,
+                          );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Fill missing fields")),
+                      );
+                    }
+                  },
+                ),
               ],
             ),
           ),
