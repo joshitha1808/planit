@@ -70,10 +70,10 @@ class _SigninPageState extends ConsumerState<SigninPage> {
                     return null;
                   },
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
 
                 //Password field
-                TextField(
+                TextFormField(
                   controller: _passwordController,
                   obscureText: true,
                   decoration: InputDecoration(
@@ -82,7 +82,14 @@ class _SigninPageState extends ConsumerState<SigninPage> {
                       borderRadius: BorderRadius.all(Radius.circular(30)),
                     ),
                   ),
+                  validator: (value) {
+                    if (value == null || value.length < 6) {
+                      return "Password must be at least 6 characters";
+                    }
+                    return null;
+                  },
                 ),
+                
               ],
             ),
           ),
