@@ -16,7 +16,6 @@ class _SigninPageState extends ConsumerState<SigninPage> {
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _isPasswordHidden = true;
-  bool rememberMe = false;
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +71,7 @@ class _SigninPageState extends ConsumerState<SigninPage> {
                     prefixIcon: Icon(Icons.email_rounded),
 
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(30)),
+                      borderRadius: BorderRadius.all(Radius.circular(18)),
                     ),
                   ),
                   validator: (value) {
@@ -104,7 +103,7 @@ class _SigninPageState extends ConsumerState<SigninPage> {
                       ),
                     ),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(30)),
+                      borderRadius: BorderRadius.all(Radius.circular(18)),
                     ),
                   ),
                   validator: (value) {
@@ -115,22 +114,7 @@ class _SigninPageState extends ConsumerState<SigninPage> {
                   },
                 ),
                 SizedBox(height: 10),
-                Row(
-                  children: [
-                    Checkbox(
-                      value: rememberMe,
-                      activeColor: Theme.of(context).colorScheme.primary,
-                      onChanged: (value) {
-                        setState(() {
-                          rememberMe = value!;
-                        });
-                      },
-                    ),
-                    Text("Remember me"),
-                    SizedBox(width: 110),
-                    Text("Forgot Password"),
-                  ],
-                ),
+
                 const SizedBox(height: 20),
                 SizedBox(
                   width:
@@ -168,15 +152,19 @@ class _SigninPageState extends ConsumerState<SigninPage> {
                       text:
                           "Don't have  an  acount?  ", //or 'Don\'t have an account
                       style: TextStyle(
-                        fontSize: 16,
-
-                        color: Theme.of(context).colorScheme.primary,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.black,
                       ),
 
                       children: const [
                         TextSpan(
                           text: 'Sign Up here',
-                          style: TextStyle(fontSize: 16),
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green,
+                          ),
                         ),
                       ],
                     ),
