@@ -56,9 +56,9 @@ class _SigninPageState extends ConsumerState<SigninPage> {
 
                 SizedBox(height: 10),
                 Text(
-                  "Enter your email and password to access your account",
+                  "Enter your email and password to securely access your account and manage your services",
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.grey),
+                  style: TextStyle(fontSize: 16),
                 ),
 
                 SizedBox(height: 30),
@@ -67,7 +67,9 @@ class _SigninPageState extends ConsumerState<SigninPage> {
                 TextFormField(
                   controller: _emailController,
                   decoration: InputDecoration(
-                    labelText: "Email",
+                    labelText: "Email address",
+                    prefixIcon: Icon(Icons.email_rounded),
+
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(30)),
                     ),
