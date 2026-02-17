@@ -54,6 +54,8 @@ class _SigninPageState extends ConsumerState<SigninPage> {
                   style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
                 ),
 
+                SizedBox(height: 10),
+
                 SizedBox(height: 30),
 
                 //Email field
