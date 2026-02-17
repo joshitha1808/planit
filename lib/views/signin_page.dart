@@ -55,6 +55,11 @@ class _SigninPageState extends ConsumerState<SigninPage> {
                 ),
 
                 SizedBox(height: 10),
+                Text(
+                  "Enter your email and password to access your account",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.grey),
+                ),
 
                 SizedBox(height: 30),
 
