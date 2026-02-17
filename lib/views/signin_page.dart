@@ -15,7 +15,7 @@ class _SigninPageState extends ConsumerState<SigninPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  bool _isPasswordHidden= true;
+  bool _isPasswordHidden = true;
 
   @override
   Widget build(BuildContext context) {
@@ -50,8 +50,8 @@ class _SigninPageState extends ConsumerState<SigninPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "Sign In",
-                  style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
+                  "Log in",
+                  style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
                 ),
 
                 SizedBox(height: 30),
