@@ -155,7 +155,7 @@ class _SigninPageState extends ConsumerState<SigninPage> {
                   ),
                 ),
 
-                const SizedBox(height: 10),
+                const SizedBox(height: 20),
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
@@ -168,7 +168,7 @@ class _SigninPageState extends ConsumerState<SigninPage> {
                       text:
                           "Don't have  an  acount?  ", //or 'Don\'t have an account
                       style: TextStyle(
-                        fontSize: 14,
+                        fontSize: 16,
 
                         color: Theme.of(context).colorScheme.primary,
                       ),
