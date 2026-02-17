@@ -115,7 +115,7 @@ class _SigninPageState extends ConsumerState<SigninPage> {
                 ),
                 const SizedBox(height: 20),
                 AuthGradientPage(
-                  buttonText: 'Sign in',
+                  buttonText: 'Login',
                   onTap: () async {
                     if (_formKey.currentState!.validate()) {
                       await ref
