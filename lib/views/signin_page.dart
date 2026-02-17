@@ -62,7 +62,7 @@ class _SigninPageState extends ConsumerState<SigninPage> {
                   style: TextStyle(fontSize: 16),
                 ),
 
-                SizedBox(height: 30),
+                SizedBox(height: 50),
 
                 //Email field
                 TextFormField(
