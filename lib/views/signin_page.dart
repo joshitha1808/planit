@@ -51,6 +51,8 @@ class _SigninPageState extends ConsumerState<SigninPage> {
                   "Sign In",
                   style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                 ),
+
+                SizedBox(height: 30),
               ],
             ),
           ),
