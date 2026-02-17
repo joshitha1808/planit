@@ -50,7 +50,7 @@ class _SigninPageState extends ConsumerState<SigninPage> {
               children: [
                 Text(
                   "Sign In",
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
                 ),
 
                 SizedBox(height: 30),
@@ -107,6 +107,32 @@ class _SigninPageState extends ConsumerState<SigninPage> {
                       );
                     }
                   },
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomePage()),
+                    );
+                  },
+                  child: RichText(
+                    text: TextSpan(
+                      text:
+                          "Don't have  an  acount?  ", //or 'Don\'t have an account
+                      style: TextStyle(
+                        fontSize: 14,
+                        //fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                      ),
+
+                      children: const [
+                        TextSpan(
+                          text: 'Sign Up',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ],
             ),
