@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:planit/constants.dart';
 
 class CategorySelector extends StatefulWidget {
-  const CategorySelector({super.key});
+  final Function(String)? onCategorySelected;
+
+  const CategorySelector({super.key, this.onCategorySelected});
 
   @override
   State<CategorySelector> createState() => _CategorySelectorState();
@@ -81,6 +83,7 @@ class _CategorySelectorState extends State<CategorySelector> {
                   setState(() {
                     selectedCategory = category;
                   });
+                  widget.onCategorySelected?.call(category);
                 },
               );
             }),
