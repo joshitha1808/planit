@@ -114,25 +114,30 @@ class _SigninPageState extends ConsumerState<SigninPage> {
                   },
                 ),
                 const SizedBox(height: 20),
-                AuthGradientPage(
-                  buttonText: 'Login',
-                  onTap: () async {
-                    if (_formKey.currentState!.validate()) {
-                      await ref
-                          .read(authViewModelProvider.notifier)
-                          .signinUser(
-                            email: _emailController.text,
-                            password: _passwordController.text,
-                          );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("Fill missing fields")),
-                      );
-                    }
-                  },
+                SizedBox(
+                  width:
+                      MediaQuery.of(context).size.width * 0.9, // Make it wide
+                  height: 70,
+                  child: AuthGradientPage(
+                    buttonText: 'Login',
+                    onTap: () async {
+                      if (_formKey.currentState!.validate()) {
+                        await ref
+                            .read(authViewModelProvider.notifier)
+                            .signinUser(
+                              email: _emailController.text,
+                              password: _passwordController.text,
+                            );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Fill missing fields")),
+                        );
+                      }
+                    },
+                  ),
                 ),
 
-                const SizedBox(height: 20),
+                const SizedBox(height: 10),
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
@@ -146,14 +151,14 @@ class _SigninPageState extends ConsumerState<SigninPage> {
                           "Don't have  an  acount?  ", //or 'Don\'t have an account
                       style: TextStyle(
                         fontSize: 14,
-                        //fontWeight: FontWeight.w700,
-                        color: Colors.white,
+
+                        color: Theme.of(context).colorScheme.primary,
                       ),
 
                       children: const [
                         TextSpan(
-                          text: 'Sign Up',
-                          style: TextStyle(color: Colors.white),
+                          text: 'Sign Up here',
+                          style: TextStyle(fontSize: 16),
                         ),
                       ],
                     ),
