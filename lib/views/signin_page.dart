@@ -122,7 +122,7 @@ class _SigninPageState extends ConsumerState<SigninPage> {
                       activeColor: Theme.of(context).colorScheme.primary,
                       onChanged: (value) {
                         setState(() {
-                          rememberMe != value!;
+                          rememberMe = value!;
                         });
                       },
                     ),
