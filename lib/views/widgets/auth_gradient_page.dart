@@ -15,7 +15,7 @@ class AuthGradientPage extends StatelessWidget {
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Colors.red, Colors.orange],
+          colors: [Colors.black, Colors.black],
           begin: Alignment.bottomLeft,
           end: Alignment.topRight,
         ),
