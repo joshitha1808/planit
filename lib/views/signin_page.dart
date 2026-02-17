@@ -10,6 +10,8 @@ class SigninPage extends ConsumerStatefulWidget {
 
 class _SigninPageState extends ConsumerState<SigninPage> {
   final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Container();
