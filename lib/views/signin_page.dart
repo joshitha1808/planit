@@ -15,6 +15,7 @@ class _SigninPageState extends ConsumerState<SigninPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  bool _isPasswordHidden= true;
 
   @override
   Widget build(BuildContext context) {
