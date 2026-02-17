@@ -53,6 +53,17 @@ class _SigninPageState extends ConsumerState<SigninPage> {
                 ),
 
                 SizedBox(height: 30),
+
+                //Email field
+                TextFormField(
+                  controller: _emailController,
+                  decoration: InputDecoration(
+                    labelText: "Email",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(30)),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
