@@ -13,6 +13,7 @@ class HomePage extends ConsumerStatefulWidget {
 
 class _HomePageState extends ConsumerState<HomePage> {
   String selectedFilter = 'All';
+
   final List<String> categories = [
     'All',
     'Work',
@@ -24,23 +25,27 @@ class _HomePageState extends ConsumerState<HomePage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    Future(() => ref.read(taskViewModelProvider.notifier).getAllTodos());
+    Future(() {
+      ref.read(taskViewModelProvider.notifier).getAllTodos();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final tasks = ref.watch(taskViewModelProvider);
+    final tasksAsync = ref.watch(taskViewModelProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Planit"),
         centerTitle: true,
         elevation: 0,
       ),
-      body: tasks.when(
+      body: tasksAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stack) => Center(child: Text("Error: $error")),
         data: (tasks) {
           final validTasks = tasks.whereType<Task>().toList();
+
           final filteredTasks = selectedFilter == 'All'
               ? validTasks
               : validTasks.where((t) => t.category == selectedFilter).toList();
@@ -48,72 +53,43 @@ class _HomePageState extends ConsumerState<HomePage> {
           final incompleteTasks = filteredTasks
               .where((t) => !t.isCompleted)
               .toList();
+
           final completedTasks = filteredTasks
               .where((t) => t.isCompleted)
               .toList();
 
           return Column(
             children: [
-              // Filter Chips
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.all(12),
                 child: Row(
-                  children: categories
-                      .map(
-                        (category) => Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 4),
-                          child: FilterChip(
-                            label: Text(category),
-                            selected: selectedFilter == category,
-                            onSelected: (selected) {
-                              setState(() {
-                                selectedFilter = category;
-                              });
-                            },
-                          ),
-                        ),
-                      )
-                      .toList(),
+                  children: categories.map((category) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      child: FilterChip(
+                        label: Text(category),
+                        selected: selectedFilter == category,
+                        onSelected: (_) {
+                          setState(() {
+                            selectedFilter = category;
+                          });
+                        },
+                      ),
+                    );
+                  }).toList(),
                 ),
               ),
-              // Task List
+
               Expanded(
                 child: (incompleteTasks.isEmpty && completedTasks.isEmpty)
-                    ? Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(
-                              Icons.task_alt,
-                              size: 64,
-                              color: Colors.grey,
-                            ),
-                            const SizedBox(height: 16),
-                            const Text(
-                              "No tasks found",
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.grey,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            const Text(
-                              "Try adjusting your filters",
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey,
-                              ),
-                            ),
-                          ],
-                        ),
-                      )
+                    ? _buildEmptyState()
                     : SingleChildScrollView(
                         padding: const EdgeInsets.all(12),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Incomplete Tasks
+                            /// Active Tasks
                             if (incompleteTasks.isNotEmpty) ...[
                               Padding(
                                 padding: const EdgeInsets.only(
@@ -131,7 +107,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                                 (task) => _buildTaskCard(context, task),
                               ),
                             ],
-                            // Completed Tasks
+
                             if (completedTasks.isNotEmpty) ...[
                               Padding(
                                 padding: const EdgeInsets.only(
@@ -158,15 +134,37 @@ class _HomePageState extends ConsumerState<HomePage> {
           );
         },
       ),
+
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => AddTaskPage()),
+            MaterialPageRoute(builder: (context) => const AddTaskPage()),
           );
         },
-        tooltip: 'Add task',
+        tooltip: 'Add Task',
         child: const Icon(Icons.add),
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return const Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.task_alt, size: 64, color: Colors.grey),
+          SizedBox(height: 16),
+          Text(
+            "No tasks found",
+            style: TextStyle(fontSize: 18, color: Colors.grey),
+          ),
+          SizedBox(height: 8),
+          Text(
+            "Try adjusting your filters",
+            style: TextStyle(fontSize: 14, color: Colors.grey),
+          ),
+        ],
       ),
     );
   }
@@ -182,7 +180,6 @@ class _HomePageState extends ConsumerState<HomePage> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Row(
           children: [
-            // Circular Checkbox
             GestureDetector(
               onTap: () {
                 final updatedTask = Task(
@@ -195,6 +192,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                   dueAt: task.dueAt,
                   isCompleted: !task.isCompleted,
                 );
+
                 ref
                     .read(taskViewModelProvider.notifier)
                     .updateTodo(updatedTask);
@@ -212,8 +210,10 @@ class _HomePageState extends ConsumerState<HomePage> {
                     : null,
               ),
             ),
+
             const SizedBox(width: 16),
-            // Task Content
+
+            /// Task Content
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -242,13 +242,14 @@ class _HomePageState extends ConsumerState<HomePage> {
                 ],
               ),
             ),
+
             const SizedBox(width: 12),
-            // Edit Icon + Delete
+
             PopupMenuButton<String>(
               onSelected: (value) {
-                if (value == 'edit') {
-                } else if (value == 'delete') {
+                if (value == 'delete') {
                   ref.read(taskViewModelProvider.notifier).deleteTodo(task.id);
+
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text('${task.title} deleted'),
@@ -257,9 +258,9 @@ class _HomePageState extends ConsumerState<HomePage> {
                   );
                 }
               },
-              itemBuilder: (context) => [
-                const PopupMenuItem(value: 'edit', child: Text('Edit')),
-                const PopupMenuItem(value: 'delete', child: Text('Delete')),
+              itemBuilder: (context) => const [
+                PopupMenuItem(value: 'edit', child: Text('Edit')),
+                PopupMenuItem(value: 'delete', child: Text('Delete')),
               ],
               child: Icon(Icons.more_vert, color: Colors.grey[400]),
             ),
