@@ -131,6 +131,8 @@ class _SigninPageState extends ConsumerState<SigninPage> {
                     }
                   },
                 ),
+
+                const SizedBox(height: 20),
                 GestureDetector(
                   onTap: () {
                     Navigator.push(
