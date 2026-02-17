@@ -113,6 +113,7 @@ class _SigninPageState extends ConsumerState<SigninPage> {
                     return null;
                   },
                 ),
+                SizedBox(height: 10),
                 const SizedBox(height: 20),
                 SizedBox(
                   width:
