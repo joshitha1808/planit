@@ -19,7 +19,7 @@ class AuthGradientPage extends StatelessWidget {
           begin: Alignment.bottomLeft,
           end: Alignment.topRight,
         ),
-        borderRadius: BorderRadius.all(Radius.circular(7)),
+        borderRadius: BorderRadius.all(Radius.circular(80)),
       ),
       child: ElevatedButton(
         onPressed: onTap,
@@ -30,8 +30,9 @@ class AuthGradientPage extends StatelessWidget {
         ),
         child: Text(
           buttonText,
+
           style: const TextStyle(
-            fontSize: 17,
+            fontSize: 22,
             color: Colors.white,
             fontWeight: FontWeight.w600,
           ),
