@@ -1,16 +1,117 @@
 import 'package:flutter/material.dart';
-import 'package:planit/views/home_page.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:planit/models/task_model.dart';
+import 'package:planit/viewmodels/task_viewmodel.dart';
 import 'package:planit/views/widgets/category_selector.dart';
 
-class AddTaskPage extends StatefulWidget {
+class AddTaskPage extends ConsumerStatefulWidget {
   const AddTaskPage({super.key});
 
   @override
-  State<AddTaskPage> createState() => _AddTaskPageState();
+  ConsumerState<AddTaskPage> createState() => _AddTaskPageState();
 }
 
-class _AddTaskPageState extends State<AddTaskPage> {
+class _AddTaskPageState extends ConsumerState<AddTaskPage> {
+  late TextEditingController titleController;
+  late TextEditingController descController;
+
   String selectedOption = "Today";
+  DateTime? customDate;
+  DateTime selectedDate = DateTime.now();
+  String? selectedCategory;
+
+  @override
+  void dispose() {
+    titleController.dispose();
+    descController.dispose();
+    super.dispose();
+  }
+
+  //calender picker
+  Future<void> _pickDate() async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
+    if (picked != null) {
+      setState(() {
+        customDate = picked;
+        selectedDate = picked;
+        selectedOption = "Custom";
+      });
+    }
+  }
+
+  void _setToday() {
+    setState(() {
+      selectedOption = "Today";
+      if (customDate == null) {
+        selectedDate = DateTime.now();
+      }
+    });
+  }
+
+  void _setTomorrow() {
+    setState(() {
+      selectedOption = "Tomorrow";
+      if (customDate == null) {
+        selectedDate = DateTime.now().add(Duration(days: 1));
+      }
+    });
+  }
+
+  void _showErrorSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Theme.of(context).colorScheme.error,
+      ),
+    );
+  }
+
+  void _handleCreateTask() async {
+    // Validation
+    if (titleController.text.trim().isEmpty) {
+      _showErrorSnackBar("Please enter a task title");
+      return;
+    }
+
+    if (selectedCategory == null) {
+      _showErrorSnackBar("Please select a category");
+      return;
+    }
+
+    // Create Task object
+    final task = Task(
+      id: '',
+      title: titleController.text.trim(),
+      description: descController.text.trim().isEmpty
+          ? null
+          : descController.text.trim(),
+      category: selectedCategory!,
+      createdAt: DateTime.now(),
+      updatedAt: DateTime.now(),
+      dueAt: selectedDate,
+    );
+
+    // Call viewmodel
+    await ref.read(taskViewModelProvider.notifier).createTodo(task);
+
+    // Handle result
+    if (mounted) {
+      Navigator.pop(context);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    titleController = TextEditingController();
+    descController = TextEditingController();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,7 +154,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                         color: Theme.of(context).colorScheme.outlineVariant,
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: _pickDate,
                     icon: Icon(Icons.add, size: 24),
                   ),
                   SizedBox(width: 18),
@@ -71,11 +172,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(36),
                     ),
-                    onSelected: (selected) {
-                      setState(() {
-                        selectedOption = "Today";
-                      });
-                    },
+                    onSelected: (_) => _setToday(),
                   ),
                   SizedBox(width: 18),
                   ChoiceChip(
@@ -91,14 +188,29 @@ class _AddTaskPageState extends State<AddTaskPage> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30),
                     ),
-                    onSelected: (selected) {
-                      setState(() {
-                        selectedOption = "Tomorrow";
-                      });
-                    },
+                    onSelected: (_) => _setTomorrow(),
                   ),
                 ],
               ),
+
+              // to display the selected data
+              if (selectedDate != null)
+                ChoiceChip(
+                  label: Text(
+                    "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}",
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  ),
+                  selected: selectedOption == "custom",
+                  showCheckmark: false,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                  onSelected: (_) {
+                    setState(() {
+                      selectedOption = "custom";
+                    });
+                  },
+                ),
               SizedBox(height: 20),
               Row(
                 children: [
@@ -138,7 +250,13 @@ class _AddTaskPageState extends State<AddTaskPage> {
                 ),
               ),
               SizedBox(height: 20),
-              CategorySelector(),
+              CategorySelector(
+                onCategorySelected: (category) {
+                  setState(() {
+                    selectedCategory = category;
+                  });
+                },
+              ),
 
               SizedBox(height: 20),
               Text(
@@ -150,6 +268,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                 ),
               ),
               TextFormField(
+                controller: titleController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30),
@@ -159,6 +278,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
               SizedBox(height: 20),
 
               TextFormField(
+                controller: descController,
                 decoration: InputDecoration(
                   labelText: "Description(optional)",
                   border: OutlineInputBorder(
@@ -178,12 +298,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                       backgroundColor: Theme.of(context).colorScheme.primary,
                       foregroundColor: Theme.of(context).colorScheme.onPrimary,
                     ),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => HomePage()),
-                      );
-                    },
+                    onPressed: _handleCreateTask,
 
                     child: Text(
                       "Create",
