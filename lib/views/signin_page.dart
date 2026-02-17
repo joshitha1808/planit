@@ -16,6 +16,7 @@ class _SigninPageState extends ConsumerState<SigninPage> {
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _isPasswordHidden = true;
+  bool rememberMe = false;
 
   @override
   Widget build(BuildContext context) {
@@ -114,6 +115,11 @@ class _SigninPageState extends ConsumerState<SigninPage> {
                   },
                 ),
                 SizedBox(height: 10),
+                Row(
+                  children: [
+                    Text("Remember me", style: TextStyle(fontSize: 14)),
+                  ],
+                ),
                 const SizedBox(height: 20),
                 SizedBox(
                   width:
