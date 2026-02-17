@@ -117,7 +117,18 @@ class _SigninPageState extends ConsumerState<SigninPage> {
                 SizedBox(height: 10),
                 Row(
                   children: [
-                    Text("Remember me", style: TextStyle(fontSize: 14)),
+                    Checkbox(
+                      value: rememberMe,
+                      activeColor: Theme.of(context).colorScheme.primary,
+                      onChanged: (value) {
+                        setState(() {
+                          rememberMe != value!;
+                        });
+                      },
+                    ),
+                    Text("Remember me"),
+                    SizedBox(width: 110),
+                    Text("Forgot Password"),
                   ],
                 ),
                 const SizedBox(height: 20),
