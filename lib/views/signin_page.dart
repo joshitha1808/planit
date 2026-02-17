@@ -63,6 +63,12 @@ class _SigninPageState extends ConsumerState<SigninPage> {
                       borderRadius: BorderRadius.all(Radius.circular(30)),
                     ),
                   ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Enter your email";
+                    }
+                    return null;
+                  },
                 ),
               ],
             ),
