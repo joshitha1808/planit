@@ -9,7 +9,7 @@ class Task {
   final DateTime createdAt;
   final DateTime updatedAt;
   final DateTime dueAt;
-  bool isCompleted;
+  final bool isCompleted;
 
   Task({
     required this.id,
@@ -22,46 +22,41 @@ class Task {
     this.isCompleted = false,
   });
 
+  /// ✅ Convert Task → Map (for Supabase insert/update)
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
       'title': title,
       'description': description,
       'category': category,
-      'created_at': createdAt.millisecondsSinceEpoch,
-      'updated_at': updatedAt.millisecondsSinceEpoch,
-      'due_at': dueAt.millisecondsSinceEpoch,
+      'created_at': createdAt.toIso8601String(),
+      'updated_at': updatedAt.toIso8601String(),
+      'due_at': dueAt.toIso8601String(),
       'is_completed': isCompleted,
     };
   }
 
+  /// ✅ Convert Map → Task (from Supabase)
   factory Task.fromMap(Map<String, dynamic> map) {
     return Task(
       id: map['id'] as String,
       title: map['title'] as String,
-      description: map['description'] != null
-          ? map['description'] as String
-          : null,
+      description: map['description'] as String?,
       category: map['category'] as String,
-      createdAt: _parseDateTime(map['created_at']),
-      updatedAt: _parseDateTime(map['updated_at']),
-      dueAt: _parseDateTime(map['due_at']),
+      createdAt: DateTime.parse(map['created_at']),
+      updatedAt: DateTime.parse(map['updated_at']),
+      dueAt: DateTime.parse(map['due_at']),
       isCompleted: map['is_completed'] as bool? ?? false,
     );
   }
 
-  static DateTime _parseDateTime(dynamic value) {
-    if (value == null) return DateTime.now();
-    if (value is int) return DateTime.fromMillisecondsSinceEpoch(value);
-    if (value is String) return DateTime.parse(value);
-    return DateTime.now();
-  }
-
+  /// JSON conversion
   String toJson() => json.encode(toMap());
 
   factory Task.fromJson(String source) =>
       Task.fromMap(json.decode(source) as Map<String, dynamic>);
 
+  /// CopyWith for updating task
   Task copyWith({
     String? id,
     String? title,
