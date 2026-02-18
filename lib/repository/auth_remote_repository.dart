@@ -38,7 +38,7 @@ class AuthRemoteRepository {
       return left(Failure(e.toString()));
     }
   }
-
+//signup
   Future<Either<Failure, User>> signup({
     required String userName,
     required String email,
