@@ -13,8 +13,10 @@ class AuthGradientPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
+      
       onPressed: onTap,
       style: ElevatedButton.styleFrom(
+        
         fixedSize: const Size(double.infinity, 55),
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
