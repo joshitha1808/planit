@@ -113,9 +113,8 @@ class _SigninPageState extends ConsumerState<SigninPage> {
                     return null;
                   },
                 ),
-                SizedBox(height: 10),
 
-                const SizedBox(height: 20),
+                const SizedBox(height: 40),
                 SizedBox(
                   width:
                       MediaQuery.of(context).size.width * 0.9, // Make it wide
@@ -149,8 +148,7 @@ class _SigninPageState extends ConsumerState<SigninPage> {
                   },
                   child: RichText(
                     text: TextSpan(
-                      text:
-                          "Don't have  an  acount?  ", //or 'Don\'t have an account
+                      text: "Don't have  an  acount?  ",
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w400,
@@ -163,7 +161,7 @@ class _SigninPageState extends ConsumerState<SigninPage> {
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: Colors.green,
+                            color: Colors.blue,
                           ),
                         ),
                       ],
