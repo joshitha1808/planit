@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:planit/models/task_model.dart';
 import 'package:planit/viewmodels/task_viewmodel.dart';
 import 'package:planit/views/widgets/category_selector.dart';
+import 'package:uuid/uuid.dart';
 
 class AddTaskPage extends ConsumerStatefulWidget {
   const AddTaskPage({super.key});
@@ -12,6 +13,7 @@ class AddTaskPage extends ConsumerStatefulWidget {
 }
 
 class _AddTaskPageState extends ConsumerState<AddTaskPage> {
+  final Uuid uuid = Uuid();
   late TextEditingController titleController;
   late TextEditingController descController;
 
@@ -85,7 +87,7 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
 
     // Create Task object
     final task = Task(
-      id: '',
+      id: uuid.v4(),
       title: titleController.text.trim(),
       description: descController.text.trim().isEmpty
           ? null
