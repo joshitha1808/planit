@@ -20,7 +20,7 @@ class AuthViewModel extends _$AuthViewModel {
   bool isUserLoggedIn() {
     return _supabaseClient.auth.currentSession != null;
   }
-
+// sign in
   Future<void> signinUser({
     required String email,
     required String password,
@@ -38,4 +38,26 @@ class AuthViewModel extends _$AuthViewModel {
       (user) => state = AsyncValue.data(user),
     );
   }
+
+  //SIGN UP
+  Future<void> signupUser({
+    required String userName,
+    required String email,
+    required String password,
+  }) async {
+    state = const AsyncValue.loading();
+
+    final res = await _authRemoteRepository.signup(
+      userName: userName,
+      email: email,
+      password: password,
+    );
+
+    res.fold(
+      (failure) =>
+          state = AsyncValue.error(failure.message, StackTrace.current),
+      (user) => state = AsyncValue.data(user),
+    );
+  }
+  
 }
