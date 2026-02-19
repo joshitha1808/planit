@@ -1,3 +1,4 @@
+import 'package:fpdart/fpdart.dart';
 import 'package:planit/repository/auth_remote_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -18,9 +19,17 @@ class AuthViewModel extends _$AuthViewModel {
   }
 
   bool isUserLoggedIn() {
-    return _supabaseClient.auth.currentSession != null;
+    // or _supabaseClient.auth.currentSession!=null(instead if if-else condition we can do like this also)
+    if (_supabaseClient.auth.currentSession == null) {
+      return false; // here user is null(means user is not present) so we r returning false
+    } else {
+      return true; // here user is present
+    }
   }
-// sign in
+
+  Future<UserResponse> get user => _supabaseClient.auth.getUser();
+
+  // sign in
   Future<void> signinUser({
     required String email,
     required String password,
@@ -59,5 +68,17 @@ class AuthViewModel extends _$AuthViewModel {
       (user) => state = AsyncValue.data(user),
     );
   }
-  
+
+  //Logout
+  Future<void> logoutUser() async {
+    state = const AsyncValue.loading();
+
+    final res = await _authRemoteRepository.logout();
+
+    res.fold(
+      (failure) =>
+          state = AsyncValue.error(failure.message, StackTrace.current),
+      (succecc) => state = null,
+    );
+  }
 }
