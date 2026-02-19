@@ -38,7 +38,8 @@ class AuthRemoteRepository {
       return left(Failure(e.toString()));
     }
   }
-//signup
+
+  //signup
   Future<Either<Failure, User>> signup({
     required String userName,
     required String email,
@@ -58,6 +59,18 @@ class AuthRemoteRepository {
       }
 
       return right(user);
+    } on AuthException catch (e) {
+      return left(Failure(e.message));
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
+  //Logout
+  Future<Either<Failure, void>> logout() async {
+    try {
+      await supabaseClient.auth.signOut();
+      return right(null);
     } on AuthException catch (e) {
       return left(Failure(e.message));
     } catch (e) {
