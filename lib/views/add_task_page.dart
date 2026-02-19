@@ -88,6 +88,7 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
     // Create Task object
     final task = Task(
       id: uuid.v4(),
+      userId: "",
       title: titleController.text.trim(),
       description: descController.text.trim().isEmpty
           ? null
@@ -117,58 +118,39 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(automaticallyImplyLeading: false, toolbarHeight: 2),
+      appBar: AppBar(
+        title: Text(
+          "New Task",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 26),
+        ),
+        automaticallyImplyLeading: true,
+        centerTitle: true,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              IconButton(
-                style: IconButton.styleFrom(
-                  padding: EdgeInsets.all(22),
-                  side: BorderSide(
-                    width: 2,
-                    color: Theme.of(context).colorScheme.outlineVariant,
-                  ),
-                ),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: Icon(Icons.close_rounded, size: 26),
-              ),
-              Text(
-                "New Task",
-                style: TextStyle(
-                  fontSize: 40,
-                  fontWeight: FontWeight.bold,
-                  // color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
               SizedBox(height: 20),
               Row(
                 children: [
                   IconButton(
                     style: IconButton.styleFrom(
-                      padding: EdgeInsets.all(22),
+                      fixedSize: Size(44, 44),
+
                       side: BorderSide(
                         width: 2,
                         color: Theme.of(context).colorScheme.outlineVariant,
                       ),
                     ),
                     onPressed: _pickDate,
-                    icon: Icon(Icons.add, size: 24),
+                    icon: Icon(Icons.add),
                   ),
-                  SizedBox(width: 18),
+                  SizedBox(width: 8),
 
                   ChoiceChip(
-                    label: Text(
-                      "Today",
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    label: Text("Today", style: TextStyle(fontSize: 16)),
                     showCheckmark: false,
                     selected: selectedOption == "Today",
                     shape: RoundedRectangleBorder(
@@ -176,15 +158,9 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
                     ),
                     onSelected: (_) => _setToday(),
                   ),
-                  SizedBox(width: 18),
+                  SizedBox(width: 8),
                   ChoiceChip(
-                    label: Text(
-                      "Tomorrow",
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    label: Text("Tomorrow", style: TextStyle(fontSize: 16)),
                     showCheckmark: false,
                     selected: selectedOption == "Tomorrow",
                     shape: RoundedRectangleBorder(
@@ -200,7 +176,7 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
                 ChoiceChip(
                   label: Text(
                     "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}",
-                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 16),
                   ),
                   selected: selectedOption == "custom",
                   showCheckmark: false,
@@ -213,36 +189,36 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
                     });
                   },
                 ),
-              SizedBox(height: 20),
-              Row(
-                children: [
-                  IconButton(
-                    style: IconButton.styleFrom(
-                      padding: EdgeInsets.all(22),
-                      side: BorderSide(
-                        width: 2,
-                        color: Theme.of(context).colorScheme.outlineVariant,
-                      ),
-                    ),
-                    onPressed: () {},
-                    icon: Icon(Icons.add_alarm_outlined, size: 30),
-                  ),
-                  SizedBox(width: 10),
+              SizedBox(height: 30),
+              // Row(
+              //   children: [
+              //     IconButton(
+              //       style: IconButton.styleFrom(
+              //         padding: EdgeInsets.all(22),
+              //         side: BorderSide(
+              //           width: 2,
+              //           color: Theme.of(context).colorScheme.outlineVariant,
+              //         ),
+              //       ),
+              //       onPressed: () {},
+              //       icon: Icon(Icons.add_alarm_outlined, size: 30),
+              //     ),
+              //     SizedBox(width: 10),
 
-                  IconButton(
-                    style: IconButton.styleFrom(
-                      padding: EdgeInsets.all(22),
-                      side: BorderSide(
-                        width: 2,
-                        color: Theme.of(context).colorScheme.outlineVariant,
-                      ),
-                    ),
-                    onPressed: () {},
-                    icon: Icon(Icons.notification_add_outlined, size: 30),
-                  ),
-                ],
-              ),
-              SizedBox(height: 50),
+              //     IconButton(
+              //       style: IconButton.styleFrom(
+              //         padding: EdgeInsets.all(22),
+              //         side: BorderSide(
+              //           width: 2,
+              //           color: Theme.of(context).colorScheme.outlineVariant,
+              //         ),
+              //       ),
+              //       onPressed: () {},
+              //       icon: Icon(Icons.notification_add_outlined, size: 30),
+              //     ),
+              //   ],
+              // ),
+              // SizedBox(height: 50),
               Text(
                 "CATEGORIES",
                 style: TextStyle(
@@ -251,7 +227,7 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
                   color: Theme.of(context).colorScheme.onPrimaryFixed,
                 ),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 16),
               CategorySelector(
                 onCategorySelected: (category) {
                   setState(() {
@@ -269,22 +245,23 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
                   color: Theme.of(context).colorScheme.onPrimaryFixed,
                 ),
               ),
+              SizedBox(height: 16),
               TextFormField(
                 controller: titleController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
+                    borderRadius: BorderRadius.circular(18),
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 16),
 
               TextFormField(
                 controller: descController,
                 decoration: InputDecoration(
                   labelText: "Description(optional)",
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
+                    borderRadius: BorderRadius.circular(18),
                   ),
                 ),
               ),
@@ -293,7 +270,7 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
                 child: SizedBox(
                   width:
                       MediaQuery.of(context).size.width * 0.9, // Make it wide
-                  height: 80,
+                  height: 50,
 
                   child: TextButton(
                     style: TextButton.styleFrom(
