@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:planit/viewmodels/auth_viewmodel.dart';
 import 'package:planit/views/home_page.dart';
+import 'package:planit/views/signup_page.dart';
 import 'package:planit/views/widgets/auth_gradient_page.dart';
 
 class SigninPage extends ConsumerStatefulWidget {
@@ -86,7 +87,7 @@ class _SigninPageState extends ConsumerState<SigninPage> {
                 //Password field
                 TextFormField(
                   controller: _passwordController,
-                  obscureText: true,
+                  obscureText: _isPasswordHidden,
                   decoration: InputDecoration(
                     labelText: "Password",
                     prefixIcon: Icon(Icons.lock),
@@ -143,12 +144,12 @@ class _SigninPageState extends ConsumerState<SigninPage> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
+                      MaterialPageRoute(builder: (context) => SignupPage()),
                     );
                   },
                   child: RichText(
                     text: TextSpan(
-                      text: "Don't have  an  acount?  ",
+                      text: "Don't have an account?  ",
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w400,
