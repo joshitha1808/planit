@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:planit/models/task_model.dart';
 import 'package:planit/viewmodels/task_viewmodel.dart';
 import 'package:planit/views/add_task_page.dart';
+import 'package:planit/views/signin_page.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -37,6 +38,18 @@ class _HomePageState extends ConsumerState<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Planit"),
+        
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SigninPage()),
+              );
+            },
+            icon: Icon(Icons.logout),
+          ),
+        ],
         centerTitle: true,
         elevation: 0,
       ),
@@ -174,7 +187,7 @@ class _HomePageState extends ConsumerState<HomePage> {
       padding: const EdgeInsets.only(bottom: 12),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.grey[850],
+          color: Colors.white,
           borderRadius: BorderRadius.circular(24),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -184,6 +197,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               onTap: () {
                 final updatedTask = Task(
                   id: task.id,
+                  userId: "",
                   title: task.title,
                   description: task.description,
                   category: task.category,
@@ -223,7 +237,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
-                      color: Colors.white,
+                      color: Colors.black,
                       decoration: task.isCompleted
                           ? TextDecoration.lineThrough
                           : null,
@@ -236,7 +250,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                         task.description!,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontSize: 13, color: Colors.grey[400]),
+                        style: TextStyle(fontSize: 14, color: Colors.black),
                       ),
                     ),
                 ],
