@@ -62,10 +62,7 @@ class _CategorySelectorState extends State<CategorySelector> {
           children: [
             ...categories.map((category) {
               return ChoiceChip(
-                label: Text(
-                  category,
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                ),
+                label: Text(category, style: TextStyle(fontSize: 16)),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
