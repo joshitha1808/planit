@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:planit/viewmodels/auth_viewmodel.dart';
 import 'package:planit/views/home_page.dart';
 import 'package:planit/views/signin_page.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -18,11 +19,19 @@ Future<void> main() async {
   runApp(ProviderScope(child: MyApp()));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends ConsumerStatefulWidget {
   const MyApp({super.key});
 
   @override
+  ConsumerState<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends ConsumerState<MyApp> {
+  @override
   Widget build(BuildContext context) {
+    final isUserLoggedIn = ref
+        .watch(authViewModelProvider.notifier)
+        .isUserLoggedIn();
     return MaterialApp(
       theme: ThemeData(
         useMaterial3: true,
@@ -32,7 +41,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       debugShowCheckedModeBanner: false,
-      home: SigninPage(),
+      home: isUserLoggedIn ? HomePage() : SigninPage(),
     );
   }
 }
