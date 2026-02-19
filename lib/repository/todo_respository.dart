@@ -8,7 +8,12 @@ class TodoRespository {
   // READ
   Future<Either<String, List<Task>>> getAllTodos() async {
     try {
-      final response = await _client.from('todos').select();
+      final userId = _client.auth.currentUser!.id;
+      final response = await _client
+          .from('todos')
+          .select()
+          .eq('user_id', userId);
+      ;
 
       final tasks = response
           .map((e) => Task.fromMap(Map<String, dynamic>.from(e as Map)))
@@ -24,9 +29,11 @@ class TodoRespository {
   //( Convert Dart object to Map for database and convert Map back to Dart object for Flutter usage)
   Future<Either<String, Task>> createTodo(Task task) async {
     try {
+      final userId = _client.auth.currentUser!.id;
+      final updatedTask = task.copyWith(userId: userId);
       final response = await _client
           .from('todos')
-          .insert(task.toMap())
+          .insert(updatedTask.toMap())
           .select()
           .single();
 
@@ -39,7 +46,9 @@ class TodoRespository {
   // UPDATE
   Future<Either<String, Unit>> updateTodo(Task task) async {
     try {
-      await _client.from('todos').update(task.toMap()).eq('id', task.id);
+      final userId = _client.auth.currentUser!.id;
+      final updatedTask = task.copyWith(userId: userId);
+      await _client.from('todos').update(updatedTask.toMap()).eq('id', task.id);
       return const Right(unit);
     } catch (e) {
       return Left(e.toString());
@@ -55,6 +64,4 @@ class TodoRespository {
       return Left(e.toString());
     }
   }
-
-  
 }
