@@ -88,7 +88,7 @@ class _HomeDrawerState extends ConsumerState<HomeDrawer> {
                 ListTile(
                   leading: Icon(Icons.star, color: Colors.amber, size: 26),
                   title: Text(
-                    "star us on Github",
+                    "Star us on Github",
                     style: TextStyle(fontSize: 18),
                   ),
                   onTap: () {
