@@ -221,7 +221,7 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.onPrimaryFixed,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
               ),
               SizedBox(height: 16),
