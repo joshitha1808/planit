@@ -64,133 +64,64 @@ class _HomeDrawerState extends ConsumerState<HomeDrawer> {
                     child: Image.asset("assets/profiles/default.png"),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 16),
-                  child: Text(
-                    "Appearance",
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.blue,
-                    ),
-                  ),
-                ),
+
                 //Toggle theme
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: 16,
-                    right: 16,
-                    top: 8,
-                    bottom: 8,
-                  ),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.blue),
-                    ),
-                    child: ListTile(
-                      leading: Icon(Icons.dark_mode, size: 26),
-                      title: Text("Dark Mode", style: TextStyle(fontSize: 18)),
-                      trailing: Switch(
-                        value: isDark,
-                        onChanged: (value) {
-                          ref
-                              .read(themeNotifierProvider.notifier)
-                              .toggleTheme();
-                        },
-                      ),
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 16),
-                  child: Text(
-                    "Actions",
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.blue,
-                    ),
+                ListTile(
+                  leading: Icon(Icons.dark_mode, size: 26),
+                  title: Text("Dark Mode", style: TextStyle(fontSize: 18)),
+                  trailing: Switch(
+                    value: isDark,
+                    onChanged: (value) {
+                      ref.read(themeNotifierProvider.notifier).toggleTheme();
+                    },
                   ),
                 ),
 
-                Padding(
-                  padding: const EdgeInsets.only(left: 16, right: 16, top: 8),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.blue),
-                    ),
-                    child: Column(
-                      children: [
-                        // github
-                        ListTile(
-                          leading: Icon(
-                            Icons.star,
-                            color: Colors.amber,
-                            size: 26,
-                          ),
-                          title: Text(
-                            "star us on Github",
-                            style: TextStyle(fontSize: 18),
-                          ),
-                          onTap: () {
-                            Navigator.pop(context);
-                            GithubLauncher().openGitHub();
-                          },
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8, right: 8),
-                          child: const Divider(height: 1),
-                        ),
-                        //logout
-                        ListTile(
-                          leading: Icon(
-                            Icons.logout_rounded,
-                            size: 26,
-                            color: Colors.red,
-                          ),
-                          title: Text("Logout", style: TextStyle(fontSize: 18)),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => SigninPage(),
-                              ),
-                            );
-                          },
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8, right: 8),
-                          child: const Divider(height: 1),
-                        ),
-                        //about
-                        ListTile(
-                          leading: const Icon(
-                            Icons.info,
-                            size: 26,
-                            color: Colors.blueAccent,
-                          ),
-                          title: const Text(
-                            "About",
-                            style: TextStyle(fontSize: 18),
-                          ),
-                          onTap: () {
-                            Navigator.pop(context); // Close drawer
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => AboutPage(),
-                              ),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
+                ListTile(
+                  leading: Icon(Icons.star, color: Colors.amber, size: 26),
+                  title: Text(
+                    "star us on Github",
+                    style: TextStyle(fontSize: 18),
                   ),
+                  onTap: () {
+                    Navigator.pop(context);
+                    GithubLauncher().openGitHub();
+                  },
                 ),
+                Padding(padding: const EdgeInsets.only(left: 8, right: 8)),
+
+                //About
+                ListTile(
+                  leading: const Icon(
+                    Icons.info,
+                    size: 26,
+                    color: Colors.blueAccent,
+                  ),
+                  title: const Text("About", style: TextStyle(fontSize: 18)),
+                  onTap: () {
+                    Navigator.pop(context); // Close drawer
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AboutPage()),
+                    );
+                  },
+                ),
+                //logout
+                ListTile(
+                  leading: Icon(
+                    Icons.logout_rounded,
+                    size: 26,
+                    color: Colors.red,
+                  ),
+                  title: Text("Logout", style: TextStyle(fontSize: 18)),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SigninPage()),
+                    );
+                  },
+                ),
+                Padding(padding: const EdgeInsets.only(left: 8, right: 8)),
               ],
             ),
           );
