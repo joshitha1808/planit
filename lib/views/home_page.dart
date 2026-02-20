@@ -30,11 +30,7 @@ class _HomePageState extends ConsumerState<HomePage> {
 
     return Scaffold(
       drawer: const HomeDrawer(),
-      appBar: AppBar(
-        title: const Text("Planit"),
-        centerTitle: true,
-        elevation: 0,
-      ),
+      appBar: AppBar(title: const Text("Planit"), centerTitle: true),
       body: tasksAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stack) => Center(child: Text("Error: $error")),
@@ -87,7 +83,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                         child: FilterChip(
                           label: Text(category),
                           selected: selectedFilter == category,
-                          selectedColor: Colors.blue.shade100,
+                          selectedColor: Theme.of(context).colorScheme.primary,
                           showCheckmark: false,
                           onSelected: (_) {
                             setState(() {
@@ -240,6 +236,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                     task.title,
                     style: TextStyle(
                       fontSize: 18,
+                      color: Colors.black,
                       fontWeight: FontWeight.w500,
                       decoration: task.isCompleted
                           ? TextDecoration.lineThrough
@@ -253,16 +250,21 @@ class _HomePageState extends ConsumerState<HomePage> {
                         task.description!,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
                       ),
                     ),
+                  //date
                   if (task.dueAt != null)
                     Padding(
                       padding: const EdgeInsets.only(top: 6),
                       child: Text(
                         "${task.dueAt!.day}/${task.dueAt!.month}/${task.dueAt!.year}",
-                        style: const TextStyle(
-                          fontSize: 12,
+                        style: TextStyle(
                           fontWeight: FontWeight.bold,
+                          color: Colors.black,
                         ),
                       ),
                     ),
@@ -272,6 +274,7 @@ class _HomePageState extends ConsumerState<HomePage> {
 
             /// Delete Menu
             PopupMenuButton<String>(
+              icon: Icon(Icons.more_vert, color: Colors.black),
               onSelected: (value) {
                 if (value == 'delete') {
                   ref.read(taskViewModelProvider.notifier).deleteTodo(task.id);
