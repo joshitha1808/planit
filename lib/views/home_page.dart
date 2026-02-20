@@ -16,14 +16,6 @@ class HomePage extends ConsumerStatefulWidget {
 class _HomePageState extends ConsumerState<HomePage> {
   String selectedFilter = 'All';
 
-  final List<String> categories = [
-    'All',
-    'Work',
-    'Personal',
-    'Shopping',
-    'Health',
-  ];
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -37,7 +29,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     final tasksAsync = ref.watch(taskViewModelProvider);
 
     return Scaffold(
-      drawer: HomeDrawer(),
+      drawer: const HomeDrawer(),
       appBar: AppBar(
         title: const Text("Planit"),
         centerTitle: true,
@@ -49,6 +41,21 @@ class _HomePageState extends ConsumerState<HomePage> {
         data: (tasks) {
           final validTasks = tasks.whereType<Task>().toList();
 
+          /// 🔥 Dynamic categories (only where tasks exist)
+          final taskCategories = validTasks
+              .map((task) => task.category)
+              .where((category) => category.isNotEmpty)
+              .toSet()
+              .toList();
+
+          final categories = ['All', ...taskCategories];
+
+          /// If selected category no longer exists → reset to All
+          if (!categories.contains(selectedFilter)) {
+            selectedFilter = 'All';
+          }
+
+          /// Filtering
           final filteredTasks = selectedFilter == 'All'
               ? validTasks
               : validTasks.where((t) => t.category == selectedFilter).toList();
@@ -63,6 +70,7 @@ class _HomePageState extends ConsumerState<HomePage> {
 
           return Column(
             children: [
+              /// 🔹 Category Chips
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.all(12),
@@ -84,6 +92,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                 ),
               ),
 
+              /// 🔹 Task List
               Expanded(
                 child: (incompleteTasks.isEmpty && completedTasks.isEmpty)
                     ? _buildEmptyState()
@@ -92,7 +101,6 @@ class _HomePageState extends ConsumerState<HomePage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            /// Active Tasks
                             if (incompleteTasks.isNotEmpty) ...[
                               Padding(
                                 padding: const EdgeInsets.only(
@@ -137,7 +145,6 @@ class _HomePageState extends ConsumerState<HomePage> {
           );
         },
       ),
-
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
@@ -162,11 +169,6 @@ class _HomePageState extends ConsumerState<HomePage> {
             "No tasks found",
             style: TextStyle(fontSize: 18, color: Colors.grey),
           ),
-          SizedBox(height: 8),
-          Text(
-            "Try adjusting your filters",
-            style: TextStyle(fontSize: 14, color: Colors.grey),
-          ),
         ],
       ),
     );
@@ -187,7 +189,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               onTap: () {
                 final updatedTask = Task(
                   id: task.id,
-                  userId: "",
+                  userId: task.userId,
                   title: task.title,
                   description: task.description,
                   category: task.category,
@@ -214,27 +216,21 @@ class _HomePageState extends ConsumerState<HomePage> {
                     : null,
               ),
             ),
-
             const SizedBox(width: 16),
-
-            /// Task Content
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  //title
                   Text(
                     task.title,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
-                      color: Colors.black,
                       decoration: task.isCompleted
                           ? TextDecoration.lineThrough
                           : null,
                     ),
                   ),
-                  //description
                   if (task.description != null && task.description!.isNotEmpty)
                     Padding(
                       padding: const EdgeInsets.only(top: 4),
@@ -242,32 +238,22 @@ class _HomePageState extends ConsumerState<HomePage> {
                         task.description!,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontSize: 14, color: Colors.black),
                       ),
                     ),
-                  //date
                   if (task.dueAt != null)
                     Padding(
                       padding: const EdgeInsets.only(top: 6),
-                      child: Row(
-                        children: [
-                          Text(
-                            "${task.dueAt!.day}/${task.dueAt.month}/${task.dueAt.year}",
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ],
+                      child: Text(
+                        "${task.dueAt!.day}/${task.dueAt!.month}/${task.dueAt!.year}",
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                 ],
               ),
             ),
-
-            const SizedBox(width: 12),
-
             PopupMenuButton<String>(
               onSelected: (value) {
                 if (value == 'delete') {
@@ -283,7 +269,6 @@ class _HomePageState extends ConsumerState<HomePage> {
               itemBuilder: (context) => const [
                 PopupMenuItem(value: 'delete', child: Text('Delete')),
               ],
-              child: Icon(Icons.more_vert, color: Colors.grey[400]),
             ),
           ],
         ),
