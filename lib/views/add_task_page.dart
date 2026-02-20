@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:planit/core/utils/show_snackbar.dart';
 import 'package:planit/models/task_model.dart';
+
 import 'package:planit/viewmodels/task_viewmodel.dart';
 import 'package:planit/views/widgets/category_selector.dart';
 import 'package:uuid/uuid.dart';
@@ -65,12 +67,7 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
   }
 
   void _showErrorSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Theme.of(context).colorScheme.error,
-      ),
-    );
+    showSnackBar(context, message, SnackBarType.error);
   }
 
   void _handleCreateTask() async {
