@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:planit/core/utils/show_snackbar.dart';
 import 'package:planit/models/task_model.dart';
-
 import 'package:planit/viewmodels/task_viewmodel.dart';
 import 'package:planit/views/add_task_page.dart';
-import 'package:planit/views/signin_page.dart';
 import 'package:planit/views/widgets/home_drawer.dart';
 
 class HomePage extends ConsumerStatefulWidget {
