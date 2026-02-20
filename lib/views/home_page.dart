@@ -222,6 +222,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  //title
                   Text(
                     task.title,
                     style: TextStyle(
@@ -233,6 +234,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                           : null,
                     ),
                   ),
+                  //description
                   if (task.description != null && task.description!.isNotEmpty)
                     Padding(
                       padding: const EdgeInsets.only(top: 4),
@@ -241,6 +243,23 @@ class _HomePageState extends ConsumerState<HomePage> {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(fontSize: 14, color: Colors.black),
+                      ),
+                    ),
+                  //date
+                  if (task.dueAt != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 6),
+                      child: Row(
+                        children: [
+                          Text(
+                            "${task.dueAt!.day}/${task.dueAt.month}/${task.dueAt.year}",
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                 ],
