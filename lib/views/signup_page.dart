@@ -202,7 +202,7 @@ class _SigninPageState extends ConsumerState<SignupPage> {
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w400,
-                        color: Colors.black,
+                        color: Theme.of(context).colorScheme.primary,
                       ),
 
                       children: const [
