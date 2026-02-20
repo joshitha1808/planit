@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:planit/core/theme/theme_provider.dart';
 import 'package:planit/viewmodels/auth_viewmodel.dart';
 import 'package:planit/views/home_page.dart';
 import 'package:planit/views/signin_page.dart';
@@ -32,14 +33,9 @@ class _MyAppState extends ConsumerState<MyApp> {
     final isUserLoggedIn = ref
         .watch(authViewModelProvider.notifier)
         .isUserLoggedIn();
+    final themeMode = ref.watch(themeNotifierProvider);
     return MaterialApp(
-      theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.blue,
-          brightness: Brightness.light,
-        ),
-      ),
+      theme: themeMode,
       debugShowCheckedModeBanner: false,
       home: isUserLoggedIn ? HomePage() : SigninPage(),
     );
