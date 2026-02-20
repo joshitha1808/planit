@@ -41,7 +41,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         data: (tasks) {
           final validTasks = tasks.whereType<Task>().toList();
 
-          /// 🔥 Dynamic categories (only where tasks exist)
+          /// 🔥 Dynamic Categories
           final taskCategories = validTasks
               .map((task) => task.category)
               .where((category) => category.isNotEmpty)
@@ -50,7 +50,7 @@ class _HomePageState extends ConsumerState<HomePage> {
 
           final categories = ['All', ...taskCategories];
 
-          /// If selected category no longer exists → reset to All
+          /// Reset filter if removed
           if (!categories.contains(selectedFilter)) {
             selectedFilter = 'All';
           }
@@ -70,29 +70,38 @@ class _HomePageState extends ConsumerState<HomePage> {
 
           return Column(
             children: [
-              /// 🔹 Category Chips
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.all(12),
-                child: Row(
-                  children: categories.map((category) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4),
-                      child: FilterChip(
-                        label: Text(category),
-                        selected: selectedFilter == category,
-                        onSelected: (_) {
-                          setState(() {
-                            selectedFilter = category;
-                          });
-                        },
-                      ),
-                    );
-                  }).toList(),
+              /// 🔹 CATEGORY CHIPS (LEFT ALIGNED FIXED)
+              Container(
+                alignment: Alignment.centerLeft,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: categories.map((category) {
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: FilterChip(
+                          label: Text(category),
+                          selected: selectedFilter == category,
+                          selectedColor: Colors.blue.shade100,
+                          showCheckmark: false,
+                          onSelected: (_) {
+                            setState(() {
+                              selectedFilter = category;
+                            });
+                          },
+                        ),
+                      );
+                    }).toList(),
+                  ),
                 ),
               ),
 
-              /// 🔹 Task List
+              /// 🔹 TASK LIST
               Expanded(
                 child: (incompleteTasks.isEmpty && completedTasks.isEmpty)
                     ? _buildEmptyState()
@@ -101,6 +110,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            /// Active Tasks
                             if (incompleteTasks.isNotEmpty) ...[
                               Padding(
                                 padding: const EdgeInsets.only(
@@ -119,6 +129,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                               ),
                             ],
 
+                            /// Completed Tasks
                             if (completedTasks.isNotEmpty) ...[
                               Padding(
                                 padding: const EdgeInsets.only(
@@ -185,6 +196,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Row(
           children: [
+            /// Toggle Complete
             GestureDetector(
               onTap: () {
                 final updatedTask = Task(
@@ -216,7 +228,10 @@ class _HomePageState extends ConsumerState<HomePage> {
                     : null,
               ),
             ),
+
             const SizedBox(width: 16),
+
+            /// Task Info
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -254,6 +269,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                 ],
               ),
             ),
+
+            /// Delete Menu
             PopupMenuButton<String>(
               onSelected: (value) {
                 if (value == 'delete') {
