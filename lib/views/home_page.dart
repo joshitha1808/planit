@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:planit/core/utils/show_snackbar.dart';
 import 'package:planit/models/task_model.dart';
+
 import 'package:planit/viewmodels/task_viewmodel.dart';
 import 'package:planit/views/add_task_page.dart';
 import 'package:planit/views/signin_page.dart';
+import 'package:planit/views/widgets/home_drawer.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -36,9 +39,9 @@ class _HomePageState extends ConsumerState<HomePage> {
     final tasksAsync = ref.watch(taskViewModelProvider);
 
     return Scaffold(
+      drawer: HomeDrawer(),
       appBar: AppBar(
         title: const Text("Planit"),
-        
         actions: [
           IconButton(
             onPressed: () {
@@ -264,11 +267,10 @@ class _HomePageState extends ConsumerState<HomePage> {
                 if (value == 'delete') {
                   ref.read(taskViewModelProvider.notifier).deleteTodo(task.id);
 
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('${task.title} deleted'),
-                      duration: const Duration(seconds: 2),
-                    ),
+                  showSnackBar(
+                    context,
+                    '${task.title} deleted',
+                    SnackBarType.error,
                   );
                 }
               },
