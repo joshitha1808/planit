@@ -281,7 +281,6 @@ class _HomePageState extends ConsumerState<HomePage> {
                 }
               },
               itemBuilder: (context) => const [
-                PopupMenuItem(value: 'edit', child: Text('Edit')),
                 PopupMenuItem(value: 'delete', child: Text('Delete')),
               ],
               child: Icon(Icons.more_vert, color: Colors.grey[400]),
