@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:planit/core/utils/show_snackbar.dart';
+
 import 'package:planit/viewmodels/auth_viewmodel.dart';
 import 'package:planit/views/home_page.dart';
 import 'package:planit/views/signup_page.dart';
@@ -32,9 +34,7 @@ class _SigninPageState extends ConsumerState<SigninPage> {
         },
 
         error: (error, st) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(error.toString())));
+          showSnackBar(context, error.toString(), SnackBarType.error);
         },
 
         loading: () {},
@@ -131,8 +131,10 @@ class _SigninPageState extends ConsumerState<SigninPage> {
                               password: _passwordController.text,
                             );
                       } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text("Fill missing fields")),
+                        showSnackBar(
+                          context,
+                          "Fill missing fields",
+                          SnackBarType.error,
                         );
                       }
                     },
