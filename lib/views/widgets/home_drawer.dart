@@ -61,7 +61,15 @@ class _HomeDrawerState extends ConsumerState<HomeDrawer> {
                     color: Theme.of(context).colorScheme.primary,
                   ),
                   currentAccountPicture: CircleAvatar(
-                    child: Image.asset("assets/profiles/default.png"),
+                    radius: 40,
+                    child: ClipOval(
+                      child: Image.asset(
+                        "assets/profiles/default.png",
+                        fit: BoxFit.cover,
+                        width: 80,
+                        height: 80,
+                      ),
+                    ),
                   ),
                 ),
 
