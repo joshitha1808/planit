@@ -42,17 +42,6 @@ class _HomePageState extends ConsumerState<HomePage> {
       drawer: HomeDrawer(),
       appBar: AppBar(
         title: const Text("Planit"),
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => SigninPage()),
-              );
-            },
-            icon: Icon(Icons.logout),
-          ),
-        ],
         centerTitle: true,
         elevation: 0,
       ),
