@@ -1,3 +1,4 @@
+import 'package:planit/core/database/database_providers.dart';
 import 'package:planit/models/task_model.dart';
 import 'package:planit/repository/todo_respository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -11,7 +12,7 @@ class TaskViewModel extends _$TaskViewModel {
 
   @override
   AsyncValue<List<Task>> build() {
-    todoRespository = TodoRespository();
+    todoRespository = TodoRespository(ref.watch(appDatabaseProvider));
     return const AsyncValue.data([]);
   }
 

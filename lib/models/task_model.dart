@@ -3,7 +3,6 @@ import 'dart:convert';
 
 class Task {
   final String id;
-  final String userId;
   final String title;
   final String? description;
   final String category;
@@ -14,7 +13,6 @@ class Task {
 
   Task({
     required this.id,
-    required this.userId,
     required this.title,
     this.description,
     required this.category,
@@ -26,7 +24,6 @@ class Task {
 
   Task copyWith({
     String? id,
-    String? userId,
     String? title,
     String? description,
     String? category,
@@ -37,7 +34,6 @@ class Task {
   }) {
     return Task(
       id: id ?? this.id,
-      userId: userId ?? this.userId,
       title: title ?? this.title,
       description: description ?? this.description,
       category: category ?? this.category,
@@ -51,7 +47,6 @@ class Task {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
-      'user_id': userId,
       'title': title,
       'description': description,
       'category': category,
@@ -65,7 +60,6 @@ class Task {
   factory Task.fromMap(Map<String, dynamic> map) {
     return Task(
       id: map['id'] as String,
-      userId: map['user_id'] as String,
       title: map['title'] as String,
       description: map['description'] != null
           ? map['description'] as String
@@ -85,7 +79,7 @@ class Task {
 
   @override
   String toString() {
-    return 'Task(id: $id, userId: $userId, title: $title, description: $description, category: $category, createdAt: $createdAt, updatedAt: $updatedAt, dueAt: $dueAt, isCompleted: $isCompleted)';
+    return 'Task(id: $id, title: $title, description: $description, category: $category, createdAt: $createdAt, updatedAt: $updatedAt, dueAt: $dueAt, isCompleted: $isCompleted)';
   }
 
   @override
@@ -93,7 +87,6 @@ class Task {
     if (identical(this, other)) return true;
 
     return other.id == id &&
-        other.userId == userId &&
         other.title == title &&
         other.description == description &&
         other.category == category &&
@@ -106,7 +99,6 @@ class Task {
   @override
   int get hashCode {
     return id.hashCode ^
-        userId.hashCode ^
         title.hashCode ^
         description.hashCode ^
         category.hashCode ^
