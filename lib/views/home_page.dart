@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:planit/core/theme/app_colors.dart';
 import 'package:planit/core/utils/show_snackbar.dart';
 import 'package:planit/models/task_model.dart';
 import 'package:planit/viewmodels/task_viewmodel.dart';
 import 'package:planit/views/add_task_page.dart';
 import 'package:planit/views/widgets/home_drawer.dart';
+import 'package:planit/views/widgets/neo_box.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -30,14 +32,26 @@ class _HomePageState extends ConsumerState<HomePage> {
 
     return Scaffold(
       drawer: const HomeDrawer(),
-      appBar: AppBar(title: const Text("Planit"), centerTitle: true),
+      appBar: AppBar(
+        title: const Text("Planit"),
+        leading: Builder(
+          builder: (context) => Padding(
+            padding: const EdgeInsets.only(left: 12),
+            child: NeoButton(
+              padding: const EdgeInsets.all(8),
+              onTap: () => Scaffold.of(context).openDrawer(),
+              child: const Icon(Icons.menu_rounded, color: AppColors.ink),
+            ),
+          ),
+        ),
+      ),
       body: tasksAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stack) => Center(child: Text("Error: $error")),
         data: (tasks) {
           final validTasks = tasks.whereType<Task>().toList();
 
-          /// 🔥 Dynamic Categories
+          /// Dynamic categories
           final taskCategories = validTasks
               .map((task) => task.category)
               .where((category) => category.isNotEmpty)
@@ -46,12 +60,10 @@ class _HomePageState extends ConsumerState<HomePage> {
 
           final categories = ['All', ...taskCategories];
 
-          /// Reset filter if removed
           if (!categories.contains(selectedFilter)) {
             selectedFilter = 'All';
           }
 
-          /// Filtering
           final filteredTasks = selectedFilter == 'All'
               ? validTasks
               : validTasks.where((t) => t.category == selectedFilter).toList();
@@ -59,122 +71,102 @@ class _HomePageState extends ConsumerState<HomePage> {
           final incompleteTasks = filteredTasks
               .where((t) => !t.isCompleted)
               .toList();
-
           final completedTasks = filteredTasks
               .where((t) => t.isCompleted)
               .toList();
 
           return Column(
             children: [
-              /// 🔹 CATEGORY CHIPS (LEFT ALIGNED FIXED)
-              Container(
-                alignment: Alignment.centerLeft,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 8,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: categories.map((category) {
-                      return Padding(
-                        padding: const EdgeInsets.only(right: 8),
-                        child: FilterChip(
-                          label: Text(category),
-                          selected: selectedFilter == category,
-                          selectedColor: Theme.of(context).colorScheme.primary,
-                          showCheckmark: false,
-                          onSelected: (_) {
-                            setState(() {
-                              selectedFilter = category;
-                            });
-                          },
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ),
+              _CategoryBar(
+                categories: categories,
+                selected: selectedFilter,
+                onSelected: (c) => setState(() => selectedFilter = c),
               ),
-
-              /// 🔹 TASK LIST
               Expanded(
                 child: (incompleteTasks.isEmpty && completedTasks.isEmpty)
                     ? _buildEmptyState()
-                    : SingleChildScrollView(
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            /// Active Tasks
-                            if (incompleteTasks.isNotEmpty) ...[
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                  left: 12,
-                                  bottom: 12,
-                                ),
-                                child: Text(
-                                  'Active Tasks',
-                                  style: Theme.of(
-                                    context,
-                                  ).textTheme.titleMedium,
-                                ),
-                              ),
-                              ...incompleteTasks.map(
-                                (task) => _buildTaskCard(context, task),
-                              ),
-                            ],
-
-                            /// Completed Tasks
-                            if (completedTasks.isNotEmpty) ...[
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                  left: 12,
-                                  top: 24,
-                                  bottom: 12,
-                                ),
-                                child: Text(
-                                  'Completed Tasks',
-                                  style: Theme.of(
-                                    context,
-                                  ).textTheme.titleMedium,
-                                ),
-                              ),
-                              ...completedTasks.map(
-                                (task) => _buildTaskCard(context, task),
-                              ),
-                            ],
+                    : ListView(
+                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
+                        children: [
+                          if (incompleteTasks.isNotEmpty) ...[
+                            _sectionLabel('🔥 Active'),
+                            ...incompleteTasks.map(
+                              (task) => _buildTaskCard(context, task),
+                            ),
                           ],
-                        ),
+                          if (completedTasks.isNotEmpty) ...[
+                            const SizedBox(height: 12),
+                            _sectionLabel('✅ Done'),
+                            ...completedTasks.map(
+                              (task) => _buildTaskCard(context, task),
+                            ),
+                          ],
+                        ],
                       ),
               ),
             ],
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
+      floatingActionButton: NeoButton(
+        color: AppColors.primary,
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+        onTap: () {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const AddTaskPage()),
           );
         },
-        tooltip: 'Add Task',
-        child: const Icon(Icons.add),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            Icon(Icons.add_rounded, color: AppColors.ink),
+            SizedBox(width: 6),
+            Text(
+              "New task",
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+                fontSize: 16,
+                color: AppColors.ink,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
+  Widget _sectionLabel(String text) => Padding(
+    padding: const EdgeInsets.only(left: 4, top: 8, bottom: 12),
+    child: Text(
+      text,
+      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+    ),
+  );
+
   Widget _buildEmptyState() {
-    return const Center(
+    return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.task_alt, size: 64, color: Colors.grey),
-          SizedBox(height: 16),
+          NeoBox(
+            color: AppColors.pastels[3],
+            padding: const EdgeInsets.all(28),
+            child: const Text('🌱', style: TextStyle(fontSize: 64)),
+          ),
+          const SizedBox(height: 24),
+          const Text(
+            "All clear!",
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900),
+          ),
+          const SizedBox(height: 8),
           Text(
-            "No tasks found",
-            style: TextStyle(fontSize: 18, color: Colors.grey),
+            "Tap “New task” to plan something.",
+            style: TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w600,
+              color: AppColors.ink.withValues(alpha: 0.7),
+            ),
           ),
         ],
       ),
@@ -182,52 +174,46 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 
   Widget _buildTaskCard(BuildContext context, Task task) {
+    final accent = AppColors.pastelFor(task.category);
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(24),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.only(bottom: 14),
+      child: NeoBox(
+        color: task.isCompleted
+            ? Theme.of(context).colorScheme.surface
+            : accent,
+        padding: const EdgeInsets.all(14),
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            /// Toggle Complete
+            /// Toggle complete
             GestureDetector(
               onTap: () {
-                final updatedTask = Task(
-                  id: task.id,
-                  userId: task.userId,
-                  title: task.title,
-                  description: task.description,
-                  category: task.category,
-                  createdAt: task.createdAt,
+                final updatedTask = task.copyWith(
                   updatedAt: DateTime.now(),
-                  dueAt: task.dueAt,
                   isCompleted: !task.isCompleted,
                 );
-
                 ref
                     .read(taskViewModelProvider.notifier)
                     .updateTodo(updatedTask);
               },
               child: Container(
-                width: 24,
-                height: 24,
+                width: 28,
+                height: 28,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(color: Colors.blue, width: 2),
-                  color: task.isCompleted ? Colors.blue : Colors.transparent,
+                  border: AppStyles.border(),
+                  color: task.isCompleted
+                      ? AppColors.secondary
+                      : AppColors.surfaceLight,
                 ),
                 child: task.isCompleted
-                    ? const Icon(Icons.check, size: 16, color: Colors.white)
+                    ? const Icon(Icons.check, size: 18, color: AppColors.ink)
                     : null,
               ),
             ),
+            const SizedBox(width: 14),
 
-            const SizedBox(width: 16),
-
-            /// Task Info
+            /// Task info
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -236,62 +222,141 @@ class _HomePageState extends ConsumerState<HomePage> {
                     task.title,
                     style: TextStyle(
                       fontSize: 18,
-                      color: Colors.black,
-                      fontWeight: FontWeight.w500,
+                      color: AppColors.ink,
+                      fontWeight: FontWeight.w800,
                       decoration: task.isCompleted
                           ? TextDecoration.lineThrough
                           : null,
                     ),
                   ),
-                  if (task.description != null && task.description!.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 4),
-                      child: Text(
-                        task.description!,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
+                  if (task.description != null &&
+                      task.description!.isNotEmpty) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      task.description!,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.ink.withValues(alpha: 0.8),
                       ),
                     ),
-                  //date
-                  if (task.dueAt != null)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 6),
-                      child: Text(
-                        "${task.dueAt!.day}/${task.dueAt!.month}/${task.dueAt!.year}",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
+                  ],
+                  const SizedBox(height: 10),
+                  Row(
+                    children: [
+                      _tag(task.category, AppColors.surfaceLight),
+                      const SizedBox(width: 8),
+                      _tag(
+                        "${task.dueAt.day}/${task.dueAt.month}/${task.dueAt.year}",
+                        AppColors.surfaceLight,
+                        icon: Icons.calendar_today_rounded,
                       ),
-                    ),
+                    ],
+                  ),
                 ],
               ),
             ),
 
-            /// Delete Menu
-            PopupMenuButton<String>(
-              icon: Icon(Icons.more_vert, color: Colors.black),
-              onSelected: (value) {
-                if (value == 'delete') {
-                  ref.read(taskViewModelProvider.notifier).deleteTodo(task.id);
-
-                  showSnackBar(
-                    context,
-                    '${task.title} deleted',
-                    SnackBarType.error,
-                  );
-                }
+            /// Delete
+            GestureDetector(
+              onTap: () {
+                ref.read(taskViewModelProvider.notifier).deleteTodo(task.id);
+                showSnackBar(
+                  context,
+                  '${task.title} deleted',
+                  SnackBarType.error,
+                );
               },
-              itemBuilder: (context) => const [
-                PopupMenuItem(value: 'delete', child: Text('Delete')),
-              ],
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppColors.surfaceLight,
+                  border: AppStyles.border(),
+                ),
+                child: const Icon(
+                  Icons.close_rounded,
+                  size: 18,
+                  color: AppColors.ink,
+                ),
+              ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _tag(String text, Color color, {IconData? icon}) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(30),
+        border: AppStyles.border(),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (icon != null) ...[
+            Icon(icon, size: 13, color: AppColors.ink),
+            const SizedBox(width: 4),
+          ],
+          Text(
+            text,
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w800,
+              color: AppColors.ink,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CategoryBar extends StatelessWidget {
+  final List<String> categories;
+  final String selected;
+  final ValueChanged<String> onSelected;
+
+  const _CategoryBar({
+    required this.categories,
+    required this.selected,
+    required this.onSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 64,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        itemCount: categories.length,
+        separatorBuilder: (_, __) => const SizedBox(width: 10),
+        itemBuilder: (context, i) {
+          final category = categories[i];
+          final isSelected = category == selected;
+          return NeoButton(
+            color: isSelected ? AppColors.primary : AppColors.surfaceLight,
+            padding: const EdgeInsets.symmetric(horizontal: 18),
+            shadowOffset: const Offset(3, 3),
+            onTap: () => onSelected(category),
+            child: Center(
+              child: Text(
+                category,
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.ink,
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }

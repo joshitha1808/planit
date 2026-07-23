@@ -1,141 +1,142 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:planit/core/theme/app_colors.dart';
 import 'package:planit/core/theme/theme_provider.dart';
 import 'package:planit/screens/about_page.dart';
 import 'package:planit/services/github_launcher.dart';
-import 'package:planit/viewmodels/auth_viewmodel.dart';
-import 'package:planit/views/signin_page.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:planit/views/widgets/neo_box.dart';
 
-class HomeDrawer extends ConsumerStatefulWidget {
+class HomeDrawer extends ConsumerWidget {
   const HomeDrawer({super.key});
 
   @override
-  ConsumerState<HomeDrawer> createState() => _HomeDrawerState();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isDark =
+        ref.watch(themeNotifierProvider).brightness == Brightness.dark;
+
+    return Drawer(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      shape: const RoundedRectangleBorder(
+        side: BorderSide(color: AppColors.ink, width: AppStyles.borderWidth),
+        borderRadius: BorderRadius.horizontal(right: Radius.circular(24)),
+      ),
+      child: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.all(20),
+          children: [
+            NeoBox(
+              color: AppColors.primary,
+              padding: const EdgeInsets.all(20),
+              child: Row(
+                children: [
+                  const Text('📝', style: TextStyle(fontSize: 40)),
+                  const SizedBox(width: 14),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        'Planit',
+                        style: TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.w900,
+                          color: AppColors.ink,
+                        ),
+                      ),
+                      Text(
+                        'your cute to-do buddy',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.ink,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+            _DrawerTile(
+              color: AppColors.pastels[3],
+              icon: isDark ? Icons.dark_mode : Icons.light_mode,
+              label: isDark ? 'Dark mode' : 'Light mode',
+              trailing: Switch(
+                value: isDark,
+                activeThumbColor: AppColors.ink,
+                onChanged: (_) =>
+                    ref.read(themeNotifierProvider.notifier).toggleTheme(),
+              ),
+              onTap: () =>
+                  ref.read(themeNotifierProvider.notifier).toggleTheme(),
+            ),
+            const SizedBox(height: 14),
+            _DrawerTile(
+              color: AppColors.pastels[2],
+              icon: Icons.star_rounded,
+              label: 'Star us on GitHub',
+              onTap: () {
+                Navigator.pop(context);
+                GithubLauncher().openGitHub();
+              },
+            ),
+            const SizedBox(height: 14),
+            _DrawerTile(
+              color: AppColors.pastels[4],
+              icon: Icons.info_rounded,
+              label: 'About',
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AboutPage()),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
-class _HomeDrawerState extends ConsumerState<HomeDrawer> {
+class _DrawerTile extends StatelessWidget {
+  final Color color;
+  final IconData icon;
+  final String label;
+  final Widget? trailing;
+  final VoidCallback onTap;
+
+  const _DrawerTile({
+    required this.color,
+    required this.icon,
+    required this.label,
+    required this.onTap,
+    this.trailing,
+  });
+
   @override
   Widget build(BuildContext context) {
-    final isDark = ThemeMode == ThemeMode.dark;
-    final Future<UserResponse> user = ref
-        .watch(authViewModelProvider.notifier)
-        .user;
-    return FutureBuilder<UserResponse>(
-      future: user,
-      builder: (context, snapshot) {
-        //loading state
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Drawer(
-            child: Center(child: CircularProgressIndicator()),
-          );
-        }
-        //error state
-        if (snapshot.hasError) {
-          return Drawer(child: Text("Error: ${snapshot.error}"));
-        }
-        //success
-        if (snapshot.hasData) {
-          final user = snapshot.data!.user;
-          return Drawer(
-            child: ListView(
-              children: [
-                UserAccountsDrawerHeader(
-                  accountName: Text(
-                    user?.userMetadata?['username'] ?? "No name",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  accountEmail: Text(
-                    user?.email ?? "No email",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  currentAccountPicture: CircleAvatar(
-                    radius: 40,
-                    child: ClipOval(
-                      child: Image.asset(
-                        "assets/profiles/default.png",
-                        fit: BoxFit.cover,
-                        width: 80,
-                        height: 80,
-                      ),
-                    ),
-                  ),
-                ),
-
-                //Toggle theme
-                ListTile(
-                  leading: Icon(Icons.dark_mode, size: 26),
-                  title: Text("Dark Mode", style: TextStyle(fontSize: 18)),
-                  trailing: Switch(
-                    value: isDark,
-                    onChanged: (value) {
-                      ref.read(themeNotifierProvider.notifier).toggleTheme();
-                    },
-                  ),
-                ),
-
-                ListTile(
-                  leading: Icon(Icons.star, color: Colors.amber, size: 26),
-                  title: Text(
-                    "Star us on Github",
-                    style: TextStyle(fontSize: 18),
-                  ),
-                  onTap: () {
-                    Navigator.pop(context);
-                    GithubLauncher().openGitHub();
-                  },
-                ),
-                Padding(padding: const EdgeInsets.only(left: 8, right: 8)),
-
-                //About
-                ListTile(
-                  leading: const Icon(
-                    Icons.info,
-                    size: 26,
-                    color: Colors.blueAccent,
-                  ),
-                  title: const Text("About", style: TextStyle(fontSize: 18)),
-                  onTap: () {
-                    Navigator.pop(context); // Close drawer
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => AboutPage()),
-                    );
-                  },
-                ),
-                //logout
-                ListTile(
-                  leading: Icon(
-                    Icons.logout_rounded,
-                    size: 26,
-                    color: Colors.red,
-                  ),
-                  title: Text("Logout", style: TextStyle(fontSize: 18)),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => SigninPage()),
-                    );
-                  },
-                ),
-                Padding(padding: const EdgeInsets.only(left: 8, right: 8)),
-              ],
+    return NeoButton(
+      color: color,
+      onTap: onTap,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      child: Row(
+        children: [
+          Icon(icon, color: AppColors.ink, size: 26),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Text(
+              label,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w800,
+                color: AppColors.ink,
+              ),
             ),
-          );
-        }
-        return Drawer(child: Center(child: Text("No user found")));
-      },
+          ),
+          if (trailing != null) trailing!,
+        ],
+      ),
     );
   }
 }

@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:planit/core/theme/app_colors.dart';
 import 'package:planit/core/utils/show_snackbar.dart';
 import 'package:planit/models/task_model.dart';
-
 import 'package:planit/viewmodels/task_viewmodel.dart';
 import 'package:planit/views/widgets/category_selector.dart';
+import 'package:planit/views/widgets/neo_box.dart';
 import 'package:uuid/uuid.dart';
 
 class AddTaskPage extends ConsumerStatefulWidget {
@@ -15,14 +16,20 @@ class AddTaskPage extends ConsumerStatefulWidget {
 }
 
 class _AddTaskPageState extends ConsumerState<AddTaskPage> {
-  final Uuid uuid = Uuid();
+  final Uuid uuid = const Uuid();
   late TextEditingController titleController;
   late TextEditingController descController;
 
   String selectedOption = "Today";
-  DateTime? customDate;
   DateTime selectedDate = DateTime.now();
   String? selectedCategory;
+
+  @override
+  void initState() {
+    super.initState();
+    titleController = TextEditingController();
+    descController = TextEditingController();
+  }
 
   @override
   void dispose() {
@@ -31,17 +38,15 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
     super.dispose();
   }
 
-  //calender picker
   Future<void> _pickDate() async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(),
+      initialDate: selectedDate,
       firstDate: DateTime(2000),
       lastDate: DateTime(2100),
     );
     if (picked != null) {
       setState(() {
-        customDate = picked;
         selectedDate = picked;
         selectedOption = "Custom";
       });
@@ -51,41 +56,29 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
   void _setToday() {
     setState(() {
       selectedOption = "Today";
-      if (customDate == null) {
-        selectedDate = DateTime.now();
-      }
+      selectedDate = DateTime.now();
     });
   }
 
   void _setTomorrow() {
     setState(() {
       selectedOption = "Tomorrow";
-      if (customDate == null) {
-        selectedDate = DateTime.now().add(Duration(days: 1));
-      }
+      selectedDate = DateTime.now().add(const Duration(days: 1));
     });
   }
 
-  void _showErrorSnackBar(String message) {
-    showSnackBar(context, message, SnackBarType.error);
-  }
-
   void _handleCreateTask() async {
-    // Validation
     if (titleController.text.trim().isEmpty) {
-      _showErrorSnackBar("Please enter a task title");
+      showSnackBar(context, "Please enter a task title", SnackBarType.error);
       return;
     }
-
     if (selectedCategory == null) {
-      _showErrorSnackBar("Please select a category");
+      showSnackBar(context, "Please select a category", SnackBarType.error);
       return;
     }
 
-    // Create Task object
     final task = Task(
       id: uuid.v4(),
-      userId: "",
       title: titleController.text.trim(),
       description: descController.text.trim().isEmpty
           ? null
@@ -96,198 +89,165 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
       dueAt: selectedDate,
     );
 
-    // Call viewmodel
     await ref.read(taskViewModelProvider.notifier).createTodo(task);
 
-    // Handle result
     if (mounted) {
       Navigator.pop(context);
     }
   }
 
   @override
-  void initState() {
-    super.initState();
-    titleController = TextEditingController();
-    descController = TextEditingController();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          "New Task",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 26),
-        ),
-        automaticallyImplyLeading: true,
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(height: 20),
-              Row(
-                children: [
-                  IconButton(
-                    style: IconButton.styleFrom(
-                      fixedSize: Size(44, 44),
-
-                      side: BorderSide(
-                        width: 2,
-                        color: Theme.of(context).colorScheme.outlineVariant,
-                      ),
-                    ),
-                    onPressed: _pickDate,
-                    icon: Icon(Icons.add),
-                  ),
-                  SizedBox(width: 8),
-
-                  ChoiceChip(
-                    label: Text("Today", style: TextStyle(fontSize: 16)),
-                    showCheckmark: false,
-                    selected: selectedOption == "Today",
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(36),
-                    ),
-                    onSelected: (_) => _setToday(),
-                  ),
-                  SizedBox(width: 8),
-                  ChoiceChip(
-                    label: Text("Tomorrow", style: TextStyle(fontSize: 16)),
-                    showCheckmark: false,
-                    selected: selectedOption == "Tomorrow",
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    onSelected: (_) => _setTomorrow(),
-                  ),
-                ],
-              ),
-
-              // to display the selected data
-              if (selectedDate != null)
-                ChoiceChip(
-                  label: Text(
-                    "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}",
-                    style: TextStyle(fontSize: 16),
-                  ),
-                  selected: selectedOption == "custom",
-                  showCheckmark: false,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                  onSelected: (_) {
-                    setState(() {
-                      selectedOption = "custom";
-                    });
-                  },
-                ),
-              SizedBox(height: 30),
-              // Row(
-              //   children: [
-              //     IconButton(
-              //       style: IconButton.styleFrom(
-              //         padding: EdgeInsets.all(22),
-              //         side: BorderSide(
-              //           width: 2,
-              //           color: Theme.of(context).colorScheme.outlineVariant,
-              //         ),
-              //       ),
-              //       onPressed: () {},
-              //       icon: Icon(Icons.add_alarm_outlined, size: 30),
-              //     ),
-              //     SizedBox(width: 10),
-
-              //     IconButton(
-              //       style: IconButton.styleFrom(
-              //         padding: EdgeInsets.all(22),
-              //         side: BorderSide(
-              //           width: 2,
-              //           color: Theme.of(context).colorScheme.outlineVariant,
-              //         ),
-              //       ),
-              //       onPressed: () {},
-              //       icon: Icon(Icons.notification_add_outlined, size: 30),
-              //     ),
-              //   ],
-              // ),
-              // SizedBox(height: 50),
-              Text(
-                "CATEGORIES",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-              SizedBox(height: 16),
-              CategorySelector(
-                onCategorySelected: (category) {
-                  setState(() {
-                    selectedCategory = category;
-                  });
-                },
-              ),
-
-              SizedBox(height: 20),
-              Text(
-                "TITLE",
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-              SizedBox(height: 16),
-              TextFormField(
-                controller: titleController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(18),
-                  ),
-                ),
-              ),
-              SizedBox(height: 16),
-
-              TextFormField(
-                controller: descController,
-                decoration: InputDecoration(
-                  labelText: "Description(optional)",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(18),
-                  ),
-                ),
-              ),
-              SizedBox(height: 40),
-              Center(
-                child: SizedBox(
-                  width:
-                      MediaQuery.of(context).size.width * 0.9, // Make it wide
-                  height: 50,
-
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                    ),
-                    onPressed: _handleCreateTask,
-
-                    child: Text(
-                      "Create",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
+        title: const Text("New Task"),
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 12),
+          child: NeoButton(
+            padding: const EdgeInsets.all(8),
+            onTap: () => Navigator.pop(context),
+            child: const Icon(Icons.arrow_back_rounded, color: AppColors.ink),
           ),
+        ),
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(20, 12, 20, 40),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _label("WHEN"),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                _dateChip("Today", selectedOption == "Today", _setToday),
+                const SizedBox(width: 10),
+                _dateChip(
+                  "Tomorrow",
+                  selectedOption == "Tomorrow",
+                  _setTomorrow,
+                ),
+                const SizedBox(width: 10),
+                NeoButton(
+                  color: selectedOption == "Custom"
+                      ? AppColors.primary
+                      : AppColors.surfaceLight,
+                  padding: const EdgeInsets.all(12),
+                  shadowOffset: const Offset(3, 3),
+                  onTap: _pickDate,
+                  child: const Icon(
+                    Icons.calendar_month_rounded,
+                    color: AppColors.ink,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Text(
+              "Due: ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}",
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+
+            const SizedBox(height: 28),
+            _label("CATEGORY"),
+            const SizedBox(height: 14),
+            CategorySelector(
+              onCategorySelected: (category) {
+                setState(() => selectedCategory = category);
+              },
+            ),
+
+            const SizedBox(height: 28),
+            _label("TITLE"),
+            const SizedBox(height: 12),
+            _field(controller: titleController, hint: "What's the plan?"),
+
+            const SizedBox(height: 20),
+            _label("DESCRIPTION"),
+            const SizedBox(height: 12),
+            _field(
+              controller: descController,
+              hint: "Add details (optional)",
+              maxLines: 3,
+            ),
+
+            const SizedBox(height: 36),
+            SizedBox(
+              width: double.infinity,
+              child: NeoButton(
+                color: AppColors.secondary,
+                padding: const EdgeInsets.symmetric(vertical: 18),
+                onTap: _handleCreateTask,
+                child: const Center(
+                  child: Text(
+                    "Create task ✨",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w900,
+                      color: AppColors.ink,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _label(String text) => Text(
+    text,
+    style: const TextStyle(
+      fontSize: 15,
+      fontWeight: FontWeight.w900,
+      letterSpacing: 1.2,
+    ),
+  );
+
+  Widget _dateChip(String label, bool selected, VoidCallback onTap) {
+    return NeoButton(
+      color: selected ? AppColors.primary : AppColors.surfaceLight,
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+      shadowOffset: const Offset(3, 3),
+      onTap: onTap,
+      child: Text(
+        label,
+        style: const TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.w800,
+          color: AppColors.ink,
+        ),
+      ),
+    );
+  }
+
+  Widget _field({
+    required TextEditingController controller,
+    required String hint,
+    int maxLines = 1,
+  }) {
+    return NeoBox(
+      color: AppColors.surfaceLight,
+      shadowOffset: const Offset(3, 3),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: TextField(
+        controller: controller,
+        maxLines: maxLines,
+        style: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w700,
+          color: AppColors.ink,
+        ),
+        decoration: InputDecoration(
+          hintText: hint,
+          hintStyle: TextStyle(
+            color: AppColors.ink.withValues(alpha: 0.4),
+            fontWeight: FontWeight.w600,
+          ),
+          border: InputBorder.none,
         ),
       ),
     );

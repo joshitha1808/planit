@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:planit/constants.dart';
+import 'package:planit/core/theme/app_colors.dart';
+import 'package:planit/views/widgets/neo_box.dart';
 
 class CategorySelector extends StatefulWidget {
   final Function(String)? onCategorySelected;
@@ -21,25 +23,35 @@ class _CategorySelectorState extends State<CategorySelector> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text("Add Category"),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppStyles.radius),
+            side: const BorderSide(
+              color: AppColors.ink,
+              width: AppStyles.borderWidth,
+            ),
+          ),
+          title: const Text(
+            "Add category",
+            style: TextStyle(fontWeight: FontWeight.w900),
+          ),
           content: TextField(
-            onChanged: (value) {
-              newCategory = value;
-            },
+            autofocus: true,
+            onChanged: (value) => newCategory = value,
+            decoration: const InputDecoration(hintText: "e.g. Fitness"),
           ),
           actions: [
             TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
+              onPressed: () => Navigator.pop(context),
               child: const Text("Cancel"),
             ),
             TextButton(
               onPressed: () {
-                if (newCategory.isNotEmpty) {
+                if (newCategory.trim().isNotEmpty) {
                   setState(() {
-                    categories.add(newCategory);
+                    categories.add(newCategory.trim());
+                    selectedCategory = newCategory.trim();
                   });
+                  widget.onCategorySelected?.call(newCategory.trim());
                 }
                 Navigator.pop(context);
               },
@@ -53,47 +65,38 @@ class _CategorySelectorState extends State<CategorySelector> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Wrap(
+      spacing: 10,
+      runSpacing: 12,
       children: [
-        Wrap(
-          spacing: 10,
-          runSpacing: 8,
-          children: [
-            ...categories.map((category) {
-              return ChoiceChip(
-                label: Text(category, style: TextStyle(fontSize: 16)),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                selected: selectedCategory == category,
-
-                // selectedColor: Colors.black,
-                // backgroundColor: Theme.of(context).colorScheme.primary,
-                // labelStyle: TextStyle(
-                //   color: selectedCategory == category
-                //       ? Colors.black
-                //       : Colors.black,
-                // ),
-                showCheckmark: false,
-                onSelected: (_) {
-                  setState(() {
-                    selectedCategory = category;
-                  });
-                  widget.onCategorySelected?.call(category);
-                },
-              );
-            }),
-
-            // Add Button
-            ActionChip(
-              label: const Icon(Icons.add, size: 28),
-              onPressed: _addCustomCategory,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
+        ...categories.map((category) {
+          final isSelected = selectedCategory == category;
+          return NeoButton(
+            color: isSelected
+                ? AppColors.pastelFor(category)
+                : AppColors.surfaceLight,
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            shadowOffset: const Offset(3, 3),
+            onTap: () {
+              setState(() => selectedCategory = category);
+              widget.onCategorySelected?.call(category);
+            },
+            child: Text(
+              category,
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w800,
+                color: AppColors.ink,
               ),
             ),
-          ],
+          );
+        }),
+        NeoButton(
+          color: AppColors.surfaceLight,
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          shadowOffset: const Offset(3, 3),
+          onTap: _addCustomCategory,
+          child: const Icon(Icons.add_rounded, color: AppColors.ink, size: 24),
         ),
       ],
     );
