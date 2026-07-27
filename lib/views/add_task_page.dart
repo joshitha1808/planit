@@ -115,8 +115,6 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _label("WHEN"),
-            const SizedBox(height: 12),
             Row(
               children: [
                 _dateChip("Today", selectedOption == "Today", _setToday),
@@ -144,10 +142,7 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
             const SizedBox(height: 12),
             Text(
               "Due: ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}",
-              style: const TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w700,
-              ),
+              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700),
             ),
 
             const SizedBox(height: 28),
