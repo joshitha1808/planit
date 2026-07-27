@@ -89,14 +89,17 @@ class _HomePageState extends ConsumerState<HomePage> {
                         padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
                         children: [
                           if (incompleteTasks.isNotEmpty) ...[
-                            _sectionLabel('🔥 Active'),
+                            _sectionLabel('Active', Icons.bolt_rounded),
                             ...incompleteTasks.map(
                               (task) => _buildTaskCard(context, task),
                             ),
                           ],
                           if (completedTasks.isNotEmpty) ...[
                             const SizedBox(height: 12),
-                            _sectionLabel('✅ Done'),
+                            _sectionLabel(
+                              'Done',
+                              Icons.check_circle_rounded,
+                            ),
                             ...completedTasks.map(
                               (task) => _buildTaskCard(context, task),
                             ),
@@ -136,11 +139,17 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
-  Widget _sectionLabel(String text) => Padding(
+  Widget _sectionLabel(String text, IconData icon) => Padding(
     padding: const EdgeInsets.only(left: 4, top: 8, bottom: 12),
-    child: Text(
-      text,
-      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+    child: Row(
+      children: [
+        Icon(icon, size: 22, color: AppColors.ink),
+        const SizedBox(width: 8),
+        Text(
+          text,
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
+        ),
+      ],
     ),
   );
 
@@ -152,7 +161,11 @@ class _HomePageState extends ConsumerState<HomePage> {
           NeoBox(
             color: AppColors.pastels[3],
             padding: const EdgeInsets.all(28),
-            child: const Text('🌱', style: TextStyle(fontSize: 64)),
+            child: const Icon(
+              Icons.task_alt_rounded,
+              size: 64,
+              color: AppColors.ink,
+            ),
           ),
           const SizedBox(height: 24),
           const Text(

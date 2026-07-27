@@ -177,7 +177,7 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
                 onTap: _handleCreateTask,
                 child: const Center(
                   child: Text(
-                    "Create task ✨",
+                    "Create task",
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w900,

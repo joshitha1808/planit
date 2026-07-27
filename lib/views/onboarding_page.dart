@@ -5,14 +5,14 @@ import 'package:planit/viewmodels/onboarding_viewmodel.dart';
 import 'package:planit/views/widgets/neo_box.dart';
 
 class _OnboardData {
-  final String emoji;
+  final IconData icon;
   final String image;
   final String title;
   final String subtitle;
   final Color color;
 
   const _OnboardData({
-    required this.emoji,
+    required this.icon,
     required this.image,
     required this.title,
     required this.subtitle,
@@ -22,7 +22,7 @@ class _OnboardData {
 
 const _pages = [
   _OnboardData(
-    emoji: '🗓️',
+    icon: Icons.edit_note_rounded,
     image: 'assets/onboarding/onboarding_1.png',
     title: 'Plan it,\nthe fun way!',
     subtitle:
@@ -30,7 +30,7 @@ const _pages = [
     color: Color(0xFFB8F2C9),
   ),
   _OnboardData(
-    emoji: '🎯',
+    icon: Icons.category_rounded,
     image: 'assets/onboarding/onboarding_2.png',
     title: 'Sort by\ncute categories',
     subtitle:
@@ -38,11 +38,11 @@ const _pages = [
     color: Color(0xFFA9C7FF),
   ),
   _OnboardData(
-    emoji: '🌱',
+    icon: Icons.timer_rounded,
     image: 'assets/onboarding/onboarding_3.png',
-    title: 'Stay cute,\nstay on track',
+    title: 'Focus &\nstay on track',
     subtitle:
-        'Everything lives right on your device. No sign-ups, no fuss — just you and your plans.',
+        'Beat procrastination with a built-in Pomodoro timer and watch your stats grow.',
     color: Color(0xFFFFC6F5),
   ),
 ];
@@ -165,7 +165,7 @@ class _OnboardSlide extends StatelessWidget {
                   data.image,
                   fit: BoxFit.contain,
                   errorBuilder: (_, __, ___) =>
-                      Text(data.emoji, style: const TextStyle(fontSize: 110)),
+                      Icon(data.icon, size: 120, color: AppColors.ink),
                 ),
               ),
             ),

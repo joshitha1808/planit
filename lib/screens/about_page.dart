@@ -45,7 +45,7 @@ class AboutPage extends StatelessWidget {
             child: Column(
               children: [
                 Text(
-                  "Created with ❤️ by",
+                  "Created with care by",
                   style: TextStyle(
                     fontSize: 18,
                     color: Theme.of(context).colorScheme.onSurface,
