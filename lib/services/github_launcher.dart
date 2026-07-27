@@ -1,6 +1,6 @@
 import 'package:url_launcher/url_launcher.dart';
 
-import '../constants/app_constants.dart';
+import '../core/constants/app_constants.dart';
 
 class GithubLauncher {
   Future<void> openGitHub() async {
