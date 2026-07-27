@@ -9,9 +9,7 @@ class AppColors {
 
   // Backgrounds
   static const Color backgroundLight = Color(0xFFFFF6E9); // warm cream
-  static const Color backgroundDark = Color(0xFF16141F);
   static const Color surfaceLight = Color(0xFFFFFFFF);
-  static const Color surfaceDark = Color(0xFF272233);
 
   // Accents
   static const Color primary = Color(0xFFFF8A5B); // playful coral

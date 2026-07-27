@@ -10,23 +10,16 @@ class ThemeNotifier extends _$ThemeNotifier {
   ThemeData build() {
     return _lightTheme;
   }
-
-  void toggleTheme() {
-    state = state.brightness == Brightness.light ? _darkTheme : _lightTheme;
-  }
 }
 
-ThemeData _buildTheme({required Brightness brightness}) {
-  final isLight = brightness == Brightness.light;
-  final background = isLight
-      ? AppColors.backgroundLight
-      : AppColors.backgroundDark;
-  final surface = isLight ? AppColors.surfaceLight : AppColors.surfaceDark;
-  final onSurface = isLight ? AppColors.ink : Colors.white;
+ThemeData _buildTheme() {
+  const background = AppColors.backgroundLight;
+  const surface = AppColors.surfaceLight;
+  const onSurface = AppColors.ink;
 
   final colorScheme = ColorScheme.fromSeed(
     seedColor: AppColors.primary,
-    brightness: brightness,
+    brightness: Brightness.light,
   ).copyWith(
     primary: AppColors.primary,
     secondary: AppColors.secondary,
@@ -37,11 +30,11 @@ ThemeData _buildTheme({required Brightness brightness}) {
 
   return ThemeData(
     useMaterial3: true,
-    brightness: brightness,
+    brightness: Brightness.light,
     colorScheme: colorScheme,
     scaffoldBackgroundColor: background,
     fontFamily: 'Roboto',
-    appBarTheme: AppBarTheme(
+    appBarTheme: const AppBarTheme(
       backgroundColor: background,
       surfaceTintColor: Colors.transparent,
       elevation: 0,
@@ -58,7 +51,7 @@ ThemeData _buildTheme({required Brightness brightness}) {
         .black
         .apply(bodyColor: onSurface, displayColor: onSurface)
         .copyWith(
-          titleMedium: TextStyle(
+          titleMedium: const TextStyle(
             color: onSurface,
             fontSize: 18,
             fontWeight: FontWeight.w800,
@@ -67,5 +60,4 @@ ThemeData _buildTheme({required Brightness brightness}) {
   );
 }
 
-final _lightTheme = _buildTheme(brightness: Brightness.light);
-final _darkTheme = _buildTheme(brightness: Brightness.dark);
+final _lightTheme = _buildTheme();

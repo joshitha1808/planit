@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:planit/core/theme/app_colors.dart';
-import 'package:planit/core/theme/theme_provider.dart';
 import 'package:planit/screens/about_page.dart';
 import 'package:planit/services/github_launcher.dart';
 import 'package:planit/views/widgets/neo_box.dart';
@@ -11,9 +10,6 @@ class HomeDrawer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isDark =
-        ref.watch(themeNotifierProvider).brightness == Brightness.dark;
-
     return Drawer(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       shape: const RoundedRectangleBorder(
@@ -29,7 +25,19 @@ class HomeDrawer extends ConsumerWidget {
               padding: const EdgeInsets.all(20),
               child: Row(
                 children: [
-                  const Text('📝', style: TextStyle(fontSize: 40)),
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: AppColors.surfaceLight,
+                      borderRadius: BorderRadius.circular(12),
+                      border: AppStyles.border(),
+                    ),
+                    child: const Icon(
+                      Icons.check_circle_rounded,
+                      size: 28,
+                      color: AppColors.ink,
+                    ),
+                  ),
                   const SizedBox(width: 14),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,20 +64,6 @@ class HomeDrawer extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 24),
-            _DrawerTile(
-              color: AppColors.pastels[3],
-              icon: isDark ? Icons.dark_mode : Icons.light_mode,
-              label: isDark ? 'Dark mode' : 'Light mode',
-              trailing: Switch(
-                value: isDark,
-                activeThumbColor: AppColors.ink,
-                onChanged: (_) =>
-                    ref.read(themeNotifierProvider.notifier).toggleTheme(),
-              ),
-              onTap: () =>
-                  ref.read(themeNotifierProvider.notifier).toggleTheme(),
-            ),
-            const SizedBox(height: 14),
             _DrawerTile(
               color: AppColors.pastels[2],
               icon: Icons.star_rounded,
@@ -103,7 +97,6 @@ class _DrawerTile extends StatelessWidget {
   final Color color;
   final IconData icon;
   final String label;
-  final Widget? trailing;
   final VoidCallback onTap;
 
   const _DrawerTile({
@@ -111,7 +104,6 @@ class _DrawerTile extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.onTap,
-    this.trailing,
   });
 
   @override
@@ -134,7 +126,6 @@ class _DrawerTile extends StatelessWidget {
               ),
             ),
           ),
-          if (trailing != null) trailing!,
         ],
       ),
     );
