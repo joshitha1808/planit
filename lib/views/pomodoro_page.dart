@@ -13,6 +13,86 @@ class PomodoroPage extends ConsumerWidget {
     return '$m:$s';
   }
 
+  void _showDurationSheet(
+    BuildContext context,
+    PomodoroState state,
+    PomodoroViewModel notifier,
+  ) {
+    int focus = state.focusMinutes;
+    int brk = state.breakMinutes;
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setSheet) {
+            return Container(
+              margin: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: AppColors.backgroundLight,
+                borderRadius: BorderRadius.circular(20),
+                border: AppStyles.border(),
+                boxShadow: AppStyles.shadow(offset: const Offset(5, 5)),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "Timer settings",
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900),
+                  ),
+                  const SizedBox(height: 20),
+                  _StepperRow(
+                    label: "Focus",
+                    value: focus,
+                    color: AppColors.primary,
+                    onChanged: (v) => setSheet(() => focus = v),
+                  ),
+                  const SizedBox(height: 14),
+                  _StepperRow(
+                    label: "Break",
+                    value: brk,
+                    color: AppColors.secondary,
+                    onChanged: (v) => setSheet(() => brk = v),
+                  ),
+                  const SizedBox(height: 24),
+                  SizedBox(
+                    width: double.infinity,
+                    child: NeoButton(
+                      color: AppColors.primary,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      onTap: () {
+                        notifier.setDurations(
+                          focusMinutes: focus,
+                          breakMinutes: brk,
+                        );
+                        Navigator.pop(context);
+                      },
+                      child: const Center(
+                        child: Text(
+                          "Save",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w900,
+                            color: AppColors.ink,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(pomodoroViewModelProvider);
@@ -21,7 +101,20 @@ class PomodoroPage extends ConsumerWidget {
     final accent = isFocus ? AppColors.primary : AppColors.secondary;
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Pomodoro")),
+      appBar: AppBar(
+        title: const Text("Pomodoro"),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 12),
+            child: NeoButton(
+              padding: const EdgeInsets.all(8),
+              shadowOffset: const Offset(3, 3),
+              onTap: () => _showDurationSheet(context, state, notifier),
+              child: const Icon(Icons.tune_rounded, color: AppColors.ink),
+            ),
+          ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
         child: Column(
@@ -164,6 +257,97 @@ class _ModeChip extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _StepperRow extends StatelessWidget {
+  final String label;
+  final int value;
+  final Color color;
+  final ValueChanged<int> onChanged;
+
+  const _StepperRow({
+    required this.label,
+    required this.value,
+    required this.color,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return NeoBox(
+      color: color,
+      shadowOffset: const Offset(3, 3),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              label,
+              style: const TextStyle(
+                fontSize: 17,
+                fontWeight: FontWeight.w900,
+                color: AppColors.ink,
+              ),
+            ),
+          ),
+          _RoundIconButton(
+            icon: Icons.remove_rounded,
+            onTap: () => onChanged(
+              (value - 1).clamp(
+                PomodoroViewModel.minMinutes,
+                PomodoroViewModel.maxMinutes,
+              ),
+            ),
+          ),
+          SizedBox(
+            width: 66,
+            child: Text(
+              "$value min",
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w900,
+                color: AppColors.ink,
+              ),
+            ),
+          ),
+          _RoundIconButton(
+            icon: Icons.add_rounded,
+            onTap: () => onChanged(
+              (value + 1).clamp(
+                PomodoroViewModel.minMinutes,
+                PomodoroViewModel.maxMinutes,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _RoundIconButton extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onTap;
+
+  const _RoundIconButton({required this.icon, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 34,
+        height: 34,
+        decoration: BoxDecoration(
+          color: AppColors.surfaceLight,
+          shape: BoxShape.circle,
+          border: AppStyles.border(),
+        ),
+        child: Icon(icon, size: 20, color: AppColors.ink),
       ),
     );
   }

@@ -6,7 +6,7 @@ part of 'pomodoro_viewmodel.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$pomodoroViewModelHash() => r'5a77e99970d524a11957bc859000329c04e06969';
+String _$pomodoroViewModelHash() => r'0d71f1028c04d4c3f3c0ecae48f10df1bf0ea527';
 
 /// See also [PomodoroViewModel].
 @ProviderFor(PomodoroViewModel)

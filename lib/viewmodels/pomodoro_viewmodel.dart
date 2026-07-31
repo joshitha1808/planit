@@ -11,12 +11,16 @@ class PomodoroState {
   final int remaining; // seconds left in the current session
   final bool isRunning;
   final int completedSessions; // number of finished focus sessions
+  final int focusMinutes; // user-configurable focus length
+  final int breakMinutes; // user-configurable break length
 
   const PomodoroState({
     required this.mode,
     required this.remaining,
     required this.isRunning,
     required this.completedSessions,
+    required this.focusMinutes,
+    required this.breakMinutes,
   });
 
   PomodoroState copyWith({
@@ -24,12 +28,16 @@ class PomodoroState {
     int? remaining,
     bool? isRunning,
     int? completedSessions,
+    int? focusMinutes,
+    int? breakMinutes,
   }) {
     return PomodoroState(
       mode: mode ?? this.mode,
       remaining: remaining ?? this.remaining,
       isRunning: isRunning ?? this.isRunning,
       completedSessions: completedSessions ?? this.completedSessions,
+      focusMinutes: focusMinutes ?? this.focusMinutes,
+      breakMinutes: breakMinutes ?? this.breakMinutes,
     );
   }
 }
@@ -38,20 +46,24 @@ class PomodoroState {
 class PomodoroViewModel extends _$PomodoroViewModel {
   Timer? _timer;
 
-  static const int focusDuration = 25 * 60;
-  static const int breakDuration = 5 * 60;
+  static const int defaultFocusMinutes = 25;
+  static const int defaultBreakMinutes = 5;
+  static const int minMinutes = 1;
+  static const int maxMinutes = 90;
 
-  int _durationFor(PomodoroMode mode) =>
-      mode == PomodoroMode.focus ? focusDuration : breakDuration;
+  int _durationFor(PomodoroMode mode, PomodoroState s) =>
+      (mode == PomodoroMode.focus ? s.focusMinutes : s.breakMinutes) * 60;
 
   @override
   PomodoroState build() {
     ref.onDispose(() => _timer?.cancel());
     return const PomodoroState(
       mode: PomodoroMode.focus,
-      remaining: focusDuration,
+      remaining: defaultFocusMinutes * 60,
       isRunning: false,
       completedSessions: 0,
+      focusMinutes: defaultFocusMinutes,
+      breakMinutes: defaultBreakMinutes,
     );
   }
 
@@ -69,7 +81,7 @@ class PomodoroViewModel extends _$PomodoroViewModel {
   void reset() {
     _timer?.cancel();
     state = state.copyWith(
-      remaining: _durationFor(state.mode),
+      remaining: _durationFor(state.mode, state),
       isRunning: false,
     );
   }
@@ -78,9 +90,23 @@ class PomodoroViewModel extends _$PomodoroViewModel {
     _timer?.cancel();
     state = state.copyWith(
       mode: mode,
-      remaining: _durationFor(mode),
+      remaining: _durationFor(mode, state),
       isRunning: false,
     );
+  }
+
+  /// Update the focus / break lengths. Resets the current (stopped) session so
+  /// the new length takes effect immediately.
+  void setDurations({required int focusMinutes, required int breakMinutes}) {
+    _timer?.cancel();
+    final focus = focusMinutes.clamp(minMinutes, maxMinutes);
+    final brk = breakMinutes.clamp(minMinutes, maxMinutes);
+    final updated = state.copyWith(
+      focusMinutes: focus,
+      breakMinutes: brk,
+      isRunning: false,
+    );
+    state = updated.copyWith(remaining: _durationFor(updated.mode, updated));
   }
 
   void _tick() {
@@ -96,13 +122,13 @@ class PomodoroViewModel extends _$PomodoroViewModel {
         ? PomodoroMode.shortBreak
         : PomodoroMode.focus;
 
-    state = state.copyWith(
+    final next = state.copyWith(
       mode: nextMode,
-      remaining: _durationFor(nextMode),
       isRunning: false,
       completedSessions: finishedFocus
           ? state.completedSessions + 1
           : state.completedSessions,
     );
+    state = next.copyWith(remaining: _durationFor(nextMode, next));
   }
 }
