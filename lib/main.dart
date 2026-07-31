@@ -3,8 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:planit/core/theme/app_colors.dart';
 import 'package:planit/core/theme/theme_provider.dart';
 import 'package:planit/viewmodels/onboarding_viewmodel.dart';
+import 'package:planit/viewmodels/profile_viewmodel.dart';
 import 'package:planit/views/main_shell.dart';
 import 'package:planit/views/onboarding_page.dart';
+import 'package:planit/views/profile_setup_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,8 +28,24 @@ class MyApp extends ConsumerWidget {
         loading: () => const _SplashScreen(),
         error: (_, __) => const MainShell(),
         data: (completed) =>
-            completed ? const MainShell() : const OnboardingPage(),
+            completed ? const _ProfileGate() : const OnboardingPage(),
       ),
+    );
+  }
+}
+
+/// After onboarding, make sure the user has set up a profile before entering
+/// the app.
+class _ProfileGate extends ConsumerWidget {
+  const _ProfileGate();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final profile = ref.watch(profileViewModelProvider);
+    return profile.when(
+      loading: () => const _SplashScreen(),
+      error: (_, __) => const MainShell(),
+      data: (p) => p == null ? const ProfileSetupPage() : const MainShell(),
     );
   }
 }

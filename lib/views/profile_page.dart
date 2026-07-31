@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:planit/core/theme/app_colors.dart';
 import 'package:planit/models/task_model.dart';
+import 'package:planit/models/user_profile.dart';
 import 'package:planit/viewmodels/pomodoro_viewmodel.dart';
+import 'package:planit/viewmodels/profile_viewmodel.dart';
 import 'package:planit/viewmodels/task_viewmodel.dart';
+import 'package:planit/views/profile_setup_page.dart';
 import 'package:planit/views/widgets/neo_box.dart';
 
 class ProfilePage extends ConsumerWidget {
@@ -12,6 +15,7 @@ class ProfilePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tasksAsync = ref.watch(taskViewModelProvider);
+    final profile = ref.watch(profileViewModelProvider).valueOrNull;
     final focusSessions = ref.watch(
       pomodoroViewModelProvider.select((s) => s.completedSessions),
     );
@@ -39,7 +43,17 @@ class ProfilePage extends ConsumerWidget {
           return ListView(
             padding: const EdgeInsets.fromLTRB(20, 8, 20, 40),
             children: [
-              _Header(),
+              _Header(
+                profile: profile,
+                onEdit: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => ProfileSetupPage(existing: profile),
+                    ),
+                  );
+                },
+              ),
               const SizedBox(height: 28),
               const _SectionLabel("Statistics"),
               const SizedBox(height: 14),
@@ -99,8 +113,19 @@ class ProfilePage extends ConsumerWidget {
 }
 
 class _Header extends StatelessWidget {
+  final UserProfile? profile;
+  final VoidCallback onEdit;
+
+  const _Header({required this.profile, required this.onEdit});
+
   @override
   Widget build(BuildContext context) {
+    final name = profile?.name.isNotEmpty == true ? profile!.name : "Planit User";
+    final email = profile?.email.isNotEmpty == true
+        ? profile!.email
+        : "staying organized, one task at a time";
+    final avatar = profile?.avatar ?? '';
+
     return NeoBox(
       color: AppColors.primary,
       shadowOffset: const Offset(5, 5),
@@ -116,38 +141,62 @@ class _Header extends StatelessWidget {
               border: AppStyles.border(),
             ),
             clipBehavior: Clip.antiAlias,
-            child: Image.asset(
-              "assets/profiles/default.png",
-              fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => const Icon(
-                Icons.person_rounded,
-                size: 40,
+            child: avatar.isEmpty
+                ? const Icon(
+                    Icons.person_rounded,
+                    size: 40,
+                    color: AppColors.ink,
+                  )
+                : Image.asset(
+                    avatar,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => const Icon(
+                      Icons.person_rounded,
+                      size: 40,
+                      color: AppColors.ink,
+                    ),
+                  ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name,
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w900,
+                    color: AppColors.ink,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  email,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.ink,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          GestureDetector(
+            onTap: onEdit,
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: AppColors.surfaceLight,
+                shape: BoxShape.circle,
+                border: AppStyles.border(),
+              ),
+              child: const Icon(
+                Icons.edit_rounded,
+                size: 18,
                 color: AppColors.ink,
               ),
             ),
-          ),
-          const SizedBox(width: 16),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              Text(
-                "Planit User",
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w900,
-                  color: AppColors.ink,
-                ),
-              ),
-              SizedBox(height: 2),
-              Text(
-                "staying organized, one task at a time",
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.ink,
-                ),
-              ),
-            ],
           ),
         ],
       ),
