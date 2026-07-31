@@ -23,7 +23,7 @@ class _OnboardData {
 const _pages = [
   _OnboardData(
     icon: Icons.edit_note_rounded,
-    image: 'assets/onboarding/onboarding_1.png',
+    image: 'assets/onboarding/project-status.png',
     title: 'Plan it,\nthe fun way!',
     subtitle:
         'Jot down everything on your mind and turn a messy day into a tidy little list.',
@@ -31,7 +31,7 @@ const _pages = [
   ),
   _OnboardData(
     icon: Icons.category_rounded,
-    image: 'assets/onboarding/onboarding_2.png',
+    image: 'assets/onboarding/team-work.png',
     title: 'Sort by\ncute categories',
     subtitle:
         'Work, study, shopping or fun — colour-code your tasks and find them in a tap.',
@@ -39,7 +39,7 @@ const _pages = [
   ),
   _OnboardData(
     icon: Icons.timer_rounded,
-    image: 'assets/onboarding/onboarding_3.png',
+    image: 'assets/onboarding/hourglass.png',
     title: 'Focus &\nstay on track',
     subtitle:
         'Beat procrastination with a built-in Pomodoro timer and watch your stats grow.',
