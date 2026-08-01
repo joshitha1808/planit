@@ -163,9 +163,9 @@ class _OnboardSlide extends StatelessWidget {
               child: Center(
                 child: Image.asset(
                   data.image,
+                  height: data.image.contains('hourglass') ? 260 : 350,
+                  width: data.image.contains('hourglass') ? 260 : 350,
                   fit: BoxFit.contain,
-                  errorBuilder: (_, __, ___) =>
-                      Icon(data.icon, size: 120, color: AppColors.ink),
                 ),
               ),
             ),
