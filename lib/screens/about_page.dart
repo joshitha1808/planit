@@ -143,7 +143,7 @@ class AboutPage extends StatelessWidget {
             child: Column(
               children: [
                 const Text(
-                  "Created with care by",
+                  "Created with ❤️ by",
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
