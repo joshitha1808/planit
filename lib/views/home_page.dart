@@ -35,13 +35,17 @@ class _HomePageState extends ConsumerState<HomePage> {
       drawer: const HomeDrawer(),
       appBar: AppBar(
         title: const Text("Planit"),
+        leadingWidth: 64,
         leading: Builder(
-          builder: (context) => Padding(
-            padding: const EdgeInsets.only(left: 12),
-            child: NeoButton(
-              padding: const EdgeInsets.all(8),
-              onTap: () => Scaffold.of(context).openDrawer(),
-              child: const Icon(Icons.menu_rounded, color: AppColors.ink),
+          builder: (context) => Center(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 12),
+              child: NeoButton(
+                padding: const EdgeInsets.all(8),
+                shadowOffset: const Offset(3, 3),
+                onTap: () => Scaffold.of(context).openDrawer(),
+                child: const Icon(Icons.menu_rounded, color: AppColors.ink),
+              ),
             ),
           ),
         ),
@@ -100,10 +104,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                           ],
                           if (completedTasks.isNotEmpty) ...[
                             const SizedBox(height: 12),
-                            _sectionLabel(
-                              'Done',
-                              Icons.check_circle_rounded,
-                            ),
+                            _sectionLabel('Done', Icons.check_circle_rounded),
                             ...completedTasks.map(
                               (task) => _buildTaskCard(context, task),
                             ),
