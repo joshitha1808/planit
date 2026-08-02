@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:planit/core/constants/app_constants.dart';
 import 'package:planit/core/theme/app_colors.dart';
 import 'package:planit/viewmodels/pomodoro_viewmodel.dart';
+import 'package:planit/views/widgets/mascot_image.dart';
 import 'package:planit/views/widgets/neo_box.dart';
 
 class PomodoroPage extends ConsumerWidget {
@@ -140,6 +142,14 @@ class PomodoroPage extends ConsumerWidget {
               onTap: () => _showDurationSheet(context, state, notifier),
               child: Column(
                 children: [
+                  if (!isFocus) ...[
+                    const MascotImage(
+                      asset: AppConstants.mascotHearts,
+                      fallback: Icons.favorite_rounded,
+                      size: 40,
+                    ),
+                    const SizedBox(height: 12),
+                  ],
                   Text(
                     isFocus ? "TIME TO FOCUS" : "TAKE A BREAK",
                     style: const TextStyle(
@@ -375,8 +385,11 @@ class _CompletedBadge extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.local_fire_department_rounded,
-              color: AppColors.ink),
+          const MascotImage(
+            asset: AppConstants.mascotStar,
+            fallback: Icons.local_fire_department_rounded,
+            size: 26,
+          ),
           const SizedBox(width: 8),
           Text(
             "$count focus ${count == 1 ? 'session' : 'sessions'} done",
