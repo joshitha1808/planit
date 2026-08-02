@@ -101,20 +101,7 @@ class PomodoroPage extends ConsumerWidget {
     final accent = isFocus ? AppColors.primary : AppColors.secondary;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Pomodoro"),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 12),
-            child: NeoButton(
-              padding: const EdgeInsets.all(8),
-              shadowOffset: const Offset(3, 3),
-              onTap: () => _showDurationSheet(context, state, notifier),
-              child: const Icon(Icons.tune_rounded, color: AppColors.ink),
-            ),
-          ),
-        ],
-      ),
+      appBar: AppBar(title: const Text("Pomodoro")),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
         child: Column(
@@ -145,11 +132,12 @@ class PomodoroPage extends ConsumerWidget {
             ),
             const Spacer(),
 
-            // Timer dial
-            NeoBox(
+            // Timer dial — tap to change durations
+            NeoButton(
               color: accent,
               shadowOffset: const Offset(6, 6),
-              padding: const EdgeInsets.symmetric(vertical: 48, horizontal: 24),
+              padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 24),
+              onTap: () => _showDurationSheet(context, state, notifier),
               child: Column(
                 children: [
                   Text(
@@ -161,7 +149,7 @@ class PomodoroPage extends ConsumerWidget {
                       color: AppColors.ink,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 12),
                   Text(
                     _format(state.remaining),
                     style: const TextStyle(
@@ -170,6 +158,26 @@ class PomodoroPage extends ConsumerWidget {
                       fontWeight: FontWeight.w900,
                       color: AppColors.ink,
                     ),
+                  ),
+                  const SizedBox(height: 14),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.edit_rounded,
+                        size: 14,
+                        color: AppColors.ink.withValues(alpha: 0.7),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        "tap to change",
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.ink.withValues(alpha: 0.7),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
