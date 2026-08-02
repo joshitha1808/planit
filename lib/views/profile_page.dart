@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:planit/core/constants/app_constants.dart';
 import 'package:planit/core/theme/app_colors.dart';
 import 'package:planit/models/task_model.dart';
 import 'package:planit/models/user_profile.dart';
@@ -7,6 +8,7 @@ import 'package:planit/viewmodels/pomodoro_viewmodel.dart';
 import 'package:planit/viewmodels/profile_viewmodel.dart';
 import 'package:planit/viewmodels/task_viewmodel.dart';
 import 'package:planit/views/profile_setup_page.dart';
+import 'package:planit/views/widgets/mascot_image.dart';
 import 'package:planit/views/widgets/neo_box.dart';
 
 class ProfilePage extends ConsumerWidget {
@@ -289,9 +291,21 @@ class _CompletionCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                "Completion",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
+              Row(
+                children: [
+                  const Text(
+                    "Completion",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
+                  ),
+                  if (total > 0 && percent == 100) ...[
+                    const SizedBox(width: 8),
+                    const MascotImage(
+                      asset: AppConstants.mascotHearts,
+                      fallback: Icons.favorite_rounded,
+                      size: 22,
+                    ),
+                  ],
+                ],
               ),
               Text(
                 "$percent%",
@@ -466,14 +480,27 @@ class _EmptyHint extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return NeoBox(
+      color: AppColors.pastels[2],
       padding: const EdgeInsets.all(18),
-      child: Text(
-        "Add some tasks to see your stats here.",
-        style: TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-          color: AppColors.ink.withValues(alpha: 0.7),
-        ),
+      child: Row(
+        children: [
+          const MascotImage(
+            asset: AppConstants.mascotChick,
+            fallback: Icons.add_task_rounded,
+            size: 44,
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Text(
+              "Add some tasks to see your stats here.",
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color: AppColors.ink.withValues(alpha: 0.85),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
