@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:planit/core/constants/app_constants.dart';
 import 'package:planit/core/theme/app_colors.dart';
 import 'package:planit/services/github_launcher.dart';
+import 'package:planit/views/widgets/mascot_image.dart';
 import 'package:planit/views/widgets/neo_box.dart';
 
 class AboutPage extends StatelessWidget {
@@ -105,16 +107,29 @@ class AboutPage extends StatelessWidget {
           const SizedBox(height: 28),
           NeoBox(
             padding: const EdgeInsets.all(18),
-            child: Text(
-              "Planit helps you organise your day the fun way. Add tasks, "
-              "sort them into cute categories, focus with a Pomodoro timer, "
-              "and watch your progress grow.",
-              style: TextStyle(
-                fontSize: 15,
-                height: 1.45,
-                fontWeight: FontWeight.w600,
-                color: AppColors.ink.withValues(alpha: 0.85),
-              ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const MascotImage(
+                  asset: AppConstants.mascotBear,
+                  fallback: Icons.emoji_emotions_rounded,
+                  size: 52,
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Text(
+                    "Planit helps you organise your day the fun way. Add tasks, "
+                    "sort them into cute categories, focus with a Pomodoro timer, "
+                    "and watch your progress grow.",
+                    style: TextStyle(
+                      fontSize: 15,
+                      height: 1.45,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.ink.withValues(alpha: 0.85),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
 
