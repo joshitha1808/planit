@@ -129,7 +129,7 @@ class _ProfileSetupPageState extends ConsumerState<ProfileSetupPage> {
               ),
             ),
             const SizedBox(height: 24),
-            _label("PICK AN AVATAR"),
+            Center(child: _label("PICK AN AVATAR")),
             const SizedBox(height: 14),
             _AvatarPicker(
               selected: _avatar,
