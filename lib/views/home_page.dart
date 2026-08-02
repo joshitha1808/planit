@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:planit/core/constants/app_constants.dart';
 import 'package:planit/core/theme/app_colors.dart';
 import 'package:planit/core/utils/show_snackbar.dart';
 import 'package:planit/models/task_model.dart';
@@ -88,6 +89,9 @@ class _HomePageState extends ConsumerState<HomePage> {
                     : ListView(
                         padding: const EdgeInsets.fromLTRB(16, 8, 16, 100),
                         children: [
+                          if (incompleteTasks.isEmpty &&
+                              completedTasks.isNotEmpty)
+                            _buildAllDoneBanner(),
                           if (incompleteTasks.isNotEmpty) ...[
                             _sectionLabel('Active', Icons.bolt_rounded),
                             ...incompleteTasks.map(
@@ -160,11 +164,11 @@ class _HomePageState extends ConsumerState<HomePage> {
         children: [
           NeoBox(
             color: AppColors.pastels[3],
-            padding: const EdgeInsets.all(28),
-            child: const Icon(
-              Icons.task_alt_rounded,
-              size: 64,
-              color: AppColors.ink,
+            padding: const EdgeInsets.all(20),
+            child: _mascot(
+              AppConstants.mascotGhost,
+              fallback: Icons.task_alt_rounded,
+              size: 90,
             ),
           ),
           const SizedBox(height: 24),
@@ -183,6 +187,70 @@ class _HomePageState extends ConsumerState<HomePage> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildAllDoneBanner() {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: NeoBox(
+        color: AppColors.secondary,
+        padding: const EdgeInsets.all(14),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: AppColors.surfaceLight,
+                borderRadius: BorderRadius.circular(12),
+                border: AppStyles.border(),
+              ),
+              child: _mascot(
+                AppConstants.mascotCat,
+                fallback: Icons.celebration_rounded,
+                size: 44,
+              ),
+            ),
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: const [
+                  Text(
+                    "All tasks completed!",
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w900,
+                      color: AppColors.ink,
+                    ),
+                  ),
+                  SizedBox(height: 2),
+                  Text(
+                    "You're on fire. Take a well-earned break!",
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.ink,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  /// Loads a mascot image, falling back to an icon when the asset is missing.
+  Widget _mascot(String asset, {required IconData fallback, double size = 64}) {
+    return Image.asset(
+      asset,
+      width: size,
+      height: size,
+      fit: BoxFit.contain,
+      errorBuilder: (_, __, ___) =>
+          Icon(fallback, size: size * 0.8, color: AppColors.ink),
     );
   }
 
