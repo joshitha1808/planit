@@ -236,7 +236,7 @@ class _StatCard extends StatelessWidget {
     return NeoBox(
       color: color,
       shadowOffset: const Offset(3, 3),
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 6),
       child: Column(
         children: [
           Icon(icon, color: AppColors.ink, size: 22),
@@ -249,12 +249,16 @@ class _StatCard extends StatelessWidget {
               color: AppColors.ink,
             ),
           ),
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w700,
-              color: AppColors.ink,
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              label,
+              maxLines: 1,
+              style: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+                color: AppColors.ink,
+              ),
             ),
           ),
         ],
