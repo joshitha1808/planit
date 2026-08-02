@@ -25,7 +25,9 @@ class _ProfileSetupPageState extends ConsumerState<ProfileSetupPage> {
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.existing?.name ?? '');
-    _emailController = TextEditingController(text: widget.existing?.email ?? '');
+    _emailController = TextEditingController(
+      text: widget.existing?.email ?? '',
+    );
     _avatar = widget.existing?.avatar ?? AppConstants.avatars.first;
   }
 
@@ -222,35 +224,40 @@ class _AvatarPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      spacing: 14,
-      runSpacing: 14,
-      alignment: WrapAlignment.center,
-      children: AppConstants.avatars.map((avatar) {
-        final isSelected = avatar == selected;
-        return GestureDetector(
-          onTap: () => onSelected(avatar),
-          child: Container(
-            width: 64,
-            height: 64,
-            decoration: BoxDecoration(
-              color: isSelected ? AppColors.primary : AppColors.surfaceLight,
-              shape: BoxShape.circle,
-              border: AppStyles.border(),
-              boxShadow: isSelected ? AppStyles.shadow(offset: const Offset(3, 3)) : null,
-            ),
-            padding: const EdgeInsets.all(6),
-            child: ClipOval(
-              child: Image.asset(
-                avatar,
-                fit: BoxFit.cover,
-                errorBuilder: (_, __, ___) =>
-                    const Icon(Icons.person_rounded, color: AppColors.ink),
+    return SizedBox(
+      width: double.infinity,
+      child: Wrap(
+        spacing: 14,
+        runSpacing: 14,
+        alignment: WrapAlignment.center,
+        children: AppConstants.avatars.map((avatar) {
+          final isSelected = avatar == selected;
+          return GestureDetector(
+            onTap: () => onSelected(avatar),
+            child: Container(
+              width: 64,
+              height: 64,
+              decoration: BoxDecoration(
+                color: isSelected ? AppColors.primary : AppColors.surfaceLight,
+                shape: BoxShape.circle,
+                border: AppStyles.border(),
+                boxShadow: isSelected
+                    ? AppStyles.shadow(offset: const Offset(3, 3))
+                    : null,
+              ),
+              padding: const EdgeInsets.all(6),
+              child: ClipOval(
+                child: Image.asset(
+                  avatar,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) =>
+                      const Icon(Icons.person_rounded, color: AppColors.ink),
+                ),
               ),
             ),
-          ),
-        );
-      }).toList(),
+          );
+        }).toList(),
+      ),
     );
   }
 }
