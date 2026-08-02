@@ -225,6 +225,7 @@ class _AvatarPicker extends StatelessWidget {
     return Wrap(
       spacing: 14,
       runSpacing: 14,
+      alignment: WrapAlignment.center,
       children: AppConstants.avatars.map((avatar) {
         final isSelected = avatar == selected;
         return GestureDetector(
