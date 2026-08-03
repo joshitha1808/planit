@@ -72,15 +72,19 @@ class _ProfileSetupPageState extends ConsumerState<ProfileSetupPage> {
       appBar: AppBar(
         title: Text(isEditing ? "Edit profile" : "Your profile"),
         automaticallyImplyLeading: false,
+        leadingWidth: 64,
         leading: isEditing
-            ? Padding(
-                padding: const EdgeInsets.only(left: 12),
-                child: NeoButton(
-                  padding: const EdgeInsets.all(8),
-                  onTap: () => Navigator.pop(context),
-                  child: const Icon(
-                    Icons.arrow_back_rounded,
-                    color: AppColors.ink,
+            ? Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 12),
+                  child: NeoButton(
+                    padding: const EdgeInsets.all(8),
+                    shadowOffset: const Offset(3, 3),
+                    onTap: () => Navigator.pop(context),
+                    child: const Icon(
+                      Icons.arrow_back_rounded,
+                      color: AppColors.ink,
+                    ),
                   ),
                 ),
               )

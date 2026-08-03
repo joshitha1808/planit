@@ -101,12 +101,16 @@ class _AddTaskPageState extends ConsumerState<AddTaskPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("New Task"),
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 12),
-          child: NeoButton(
-            padding: const EdgeInsets.all(8),
-            onTap: () => Navigator.pop(context),
-            child: const Icon(Icons.arrow_back_rounded, color: AppColors.ink),
+        leadingWidth: 64,
+        leading: Center(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 12),
+            child: NeoButton(
+              padding: const EdgeInsets.all(8),
+              shadowOffset: const Offset(3, 3),
+              onTap: () => Navigator.pop(context),
+              child: const Icon(Icons.arrow_back_rounded, color: AppColors.ink),
+            ),
           ),
         ),
       ),
