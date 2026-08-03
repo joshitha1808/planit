@@ -63,18 +63,24 @@ class AboutPage extends StatelessWidget {
                 NeoBox(
                   color: AppColors.primary,
                   shadowOffset: const Offset(5, 5),
-                  padding: const EdgeInsets.all(14),
+                  padding: EdgeInsets.zero,
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(
+                      AppStyles.radius - AppStyles.borderWidth,
+                    ),
                     child: Image.asset(
                       "assets/icon/app_icon.png",
-                      width: 88,
-                      height: 88,
+                      width: 110,
+                      height: 110,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => const Icon(
-                        Icons.check_circle_rounded,
-                        size: 72,
-                        color: AppColors.ink,
+                      errorBuilder: (_, __, ___) => const SizedBox(
+                        width: 110,
+                        height: 110,
+                        child: Icon(
+                          Icons.check_circle_rounded,
+                          size: 80,
+                          color: AppColors.ink,
+                        ),
                       ),
                     ),
                   ),

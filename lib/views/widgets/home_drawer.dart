@@ -26,24 +26,21 @@ class HomeDrawer extends ConsumerWidget {
               child: Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(6),
+                    width: 56,
+                    height: 56,
                     decoration: BoxDecoration(
                       color: AppColors.surfaceLight,
                       borderRadius: BorderRadius.circular(12),
                       border: AppStyles.border(),
                     ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Image.asset(
-                        "assets/icon/app_icon.png",
-                        width: 40,
-                        height: 40,
-                        fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => const Icon(
-                          Icons.check_circle_rounded,
-                          size: 28,
-                          color: AppColors.ink,
-                        ),
+                    clipBehavior: Clip.antiAlias,
+                    child: Image.asset(
+                      "assets/icon/app_icon.png",
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) => const Icon(
+                        Icons.check_circle_rounded,
+                        size: 32,
+                        color: AppColors.ink,
                       ),
                     ),
                   ),
