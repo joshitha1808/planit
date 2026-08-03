@@ -163,8 +163,8 @@ class _OnboardSlide extends StatelessWidget {
               child: Center(
                 child: Image.asset(
                   data.image,
-                  height: data.image.contains('hourglass') ? 260 : 350,
-                  width: data.image.contains('hourglass') ? 260 : 350,
+                  height: 260,
+                  width: 260,
                   fit: BoxFit.contain,
                 ),
               ),
