@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:planit/core/constants/app_constants.dart';
 import 'package:planit/core/theme/app_colors.dart';
 import 'package:planit/services/github_launcher.dart';
+import 'package:planit/views/widgets/app_logo.dart';
 import 'package:planit/views/widgets/mascot_image.dart';
 import 'package:planit/views/widgets/neo_box.dart';
 
@@ -60,31 +61,7 @@ class AboutPage extends StatelessWidget {
           Center(
             child: Column(
               children: [
-                NeoBox(
-                  color: AppColors.primary,
-                  shadowOffset: const Offset(5, 5),
-                  padding: EdgeInsets.zero,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(
-                      AppStyles.radius - AppStyles.borderWidth,
-                    ),
-                    child: Image.asset(
-                      "assets/icon/app_icon.png",
-                      width: 110,
-                      height: 110,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) => const SizedBox(
-                        width: 110,
-                        height: 110,
-                        child: Icon(
-                          Icons.check_circle_rounded,
-                          size: 80,
-                          color: AppColors.ink,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                const AppLogo(size: 120, shadow: true),
                 const SizedBox(height: 18),
                 const Text(
                   "Planit",
