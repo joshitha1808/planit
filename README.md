@@ -1,14 +1,21 @@
 <p align="center">
   <img src="assets/icon/app_icon.png" width="120" height="120" alt="Planit App Icon">
 </p>
-
-<h1 align="center">✅ Planit</h1>
+  
+<h1 align="center"> Planit</h1>
 
 <p align="center">
 A cute, offline-first Flutter to-do app with a neo-brutalism design — organise your day with colour-coded tasks, stay focused with a built-in Pomodoro timer, and track your progress. No accounts, no cloud; everything lives on your device.
 </p>
 
----
+
+<p align="center">
+  <img src="./public/Home.png" height="360" alt="Todos" />
+  <img src="./public/Task.png" height="360" alt="New Task" />
+  <img src="./public/Pomodoro.png" height="360" alt="Pomodoro" />
+  <img src="./public/Profile.png" height="360" alt="Profile & Stats" />
+</p>
+
 
 ## 🚀 Overview
 
@@ -25,35 +32,23 @@ things done.
 - Personal statistics (completion, pending, focus sessions, per-category)
 - A local profile with a name, email, and avatar
 
----
+
 
 ## ✨ Features
 
-- 👋 First-run **onboarding** slides
-- 🧑‍🎨 **Profile setup** — name, email, and pick-an-avatar
-- 📝 **Tasks** with title, description, category, and due date
-- 🗂️ **Colour-coded categories** with quick filtering
-- ✅ One-tap **complete / delete**
-- 🍅 **Pomodoro timer** with user-adjustable focus & break lengths
-- 📊 **Statistics** — total, done, pending, completion %, and focus sessions
-- 🐾 Cute **mascot illustrations** for empty & all-done states
-- 🎨 Bold **neo-brutalism** UI
-- 🔒 **100% offline** — all data stored locally with Drift
-- ⚡ Lightweight and fast
+-  First-run **onboarding** slides
+-  **Profile setup** — name, email, and pick-an-avatar
+-  **Tasks** with title, description, category, and due date
+-  **Colour-coded categories** with quick filtering
+-  One-tap **complete / delete**
+-  **Pomodoro timer** with user-adjustable focus & break lengths
+-  **Statistics** — total, done, pending, completion %, and focus sessions
+-  Cute **mascot illustrations** for empty & all-done states
+-  Bold **neo-brutalism** UI
+-  **100% offline** — all data stored locally with Drift
+- Lightweight and fast
 
----
 
-## 🖼️ Screenshots
-
-<p align="center">
-  <img src="./public/Home.png" height="360" alt="Todos" />
-  <img src="./public/Task.png" height="360" alt="New Task" />
-  <img src="./public/Pomodoro.png" height="360" alt="Pomodoro" />
-  <img src="./public/PomodoroB.png" height="360" alt="Pomodoro Break" />
-  <img src="./public/Profile.png" height="360" alt="Profile & Stats" />
-</p>
-
----
 
 ## 🧰 Tech Stack
 
@@ -68,23 +63,6 @@ things done.
 | Platforms | Android, iOS, Web*, Desktop* |
 
 <sub>*Drift uses a native SQLite backend; running on web requires a WASM/worker setup.</sub>
-
----
-
-## 📦 Dependencies
-
-| Package | Purpose |
-|---------|---------|
-| `flutter_riverpod` / `riverpod_annotation` | State management |
-| `drift` / `sqlite3_flutter_libs` | Local SQLite database |
-| `path` / `path_provider` | Resolve the on-device database location |
-| `fpdart` | `Either`-based error handling in repositories |
-| `uuid` | Generate unique task ids |
-| `url_launcher` | Open external links (GitHub) |
-| `flutter_launcher_icons` | App icon generation |
-| `drift_dev` / `riverpod_generator` / `build_runner` | Code generation (dev) |
-
----
 
 ## 📁 Project Structure
 
@@ -125,7 +103,7 @@ planit/
 └── README.md
 ```
 
----
+
 
 ## ⚙️ Installation & Run
 
@@ -156,7 +134,7 @@ flutter run
 > Riverpod (`*.g.dart` files). Re-run it whenever you change a table,
 > `@riverpod` provider, or model.
 
----
+
 
 ## 🗄️ Data & Privacy
 
@@ -164,7 +142,7 @@ Planit is **fully offline**. All tasks, your profile, and preferences are stored
 locally in an on-device SQLite database via **Drift**. Nothing is sent anywhere —
 there are no accounts and no network calls for your data.
 
----
+
 
 ## 📄 License
 
